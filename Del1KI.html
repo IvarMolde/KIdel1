@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KI i elevens læringsarbeid</title>
+<meta name="description" content="Fagguide for lærere om generativ kunstig intelligens i skolen, med forklaringer, videoer og kilder fra emnet ved Høgskolen i Østfold.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: fast innholdsfortegnelse til venstre, lesekolonne i midten, brede videoflater under teksten.
+   Fargeplan: kjølig papir, marineblå blekk, ett gult merkepenn-uttrykk som eneste sterke aksent. */
+:root{
+  --paper:#F3F5F9; --surface:#FFFFFF; --soft:#E8ECF5; --ink:#0F1B33; --muted:#4A5874; --line:#D5DBE7;
+  --link:#2140C4; --marker:#FFD43B; --marker-ink:#0F1B33; --mark:rgba(255,212,59,.95);
+  --deep:#12234A; --deep-ink:#EEF2FF;
+  --green:#1E7A4E; --amber:#A8660A; --red:#B3261E; --black:#1B1B1F;
+  --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --font-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0B1324; --surface:#121D35; --soft:#17233F; --ink:#E7ECF7; --muted:#9DAAC6; --line:#25324F;
+    --link:#93AAFF; --mark:rgba(255,212,59,.3); --deep:#1B2E5C; --deep-ink:#EEF2FF;
+    --green:#4CC38A; --amber:#E3A33F; --red:#FF8A80; --black:#D6D9E3; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0B1324; --surface:#121D35; --soft:#17233F; --ink:#E7ECF7; --muted:#9DAAC6; --line:#25324F;
+  --link:#93AAFF; --mark:rgba(255,212,59,.3); --deep:#1B2E5C; --deep-ink:#EEF2FF;
+  --green:#4CC38A; --amber:#E3A33F; --red:#FF8A80; --black:#D6D9E3; color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.7 var(--font-body);-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
+a{color:var(--link);text-underline-offset:.18em}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--marker);outline-offset:2px;box-shadow:0 0 0 5px var(--ink)}
+img{max-width:100%}
+mark{background:linear-gradient(transparent 58%,var(--mark) 58%);color:inherit;padding:0 .1em}
+.skip{position:absolute;left:-999px;top:0;background:var(--marker);color:var(--marker-ink);padding:.6rem 1rem;z-index:100;font:700 .95rem var(--font-display)}
+.skip:focus{left:1rem;top:1rem}
+
+/* fremdrift */
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:transparent}
+.progress i{display:block;height:100%;width:0;background:var(--marker)}
+
+/* skall */
+.shell{display:grid;grid-template-columns:19.5rem minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--surface);border-right:1px solid var(--line);padding:1.5rem 1rem 3rem 1.25rem;overscroll-behavior:contain}
+.brand{padding:0 .5rem 1.1rem;border-bottom:1px solid var(--line);margin-bottom:.5rem}
+.brand b{display:block;font:700 1.25rem/1.15 var(--font-display);letter-spacing:-.01em}
+.brand span{font:400 .75rem/1.4 var(--font-mono);color:var(--muted);letter-spacing:.04em}
+.navgroup{margin:1.1rem 0 0}
+.navgroup h2{margin:0 0 .3rem;padding:0 .5rem;font:500 .7rem/1.4 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.navgroup ul{list-style:none;margin:0;padding:0}
+.navgroup a{display:block;padding:.28rem .5rem;border-radius:4px;font:500 .93rem/1.35 var(--font-display);color:var(--ink);text-decoration:none}
+.navgroup a:hover{background:var(--soft)}
+.navgroup a[aria-current="true"]{background:var(--marker);color:var(--marker-ink)}
+
+.topbar{display:none}
+.scrim{position:fixed;inset:0;background:rgba(5,10,24,.55);z-index:45}
+
+.main{min-width:0}
+.wrap{max-width:62rem;margin-inline:auto;padding-left:max(clamp(1rem,4vw,3.25rem),env(safe-area-inset-left,0px));padding-right:max(clamp(1rem,4vw,3.25rem),env(safe-area-inset-right,0px))}
+
+/* hero */
+.hero{padding-block:clamp(2.5rem,6vw,4.5rem) 2.5rem}
+.hero .eyebrow{margin:0 0 1rem}
+.hero h1{margin:0;font:700 clamp(2.3rem,6.2vw,4.3rem)/1.02 var(--font-display);letter-spacing:-.025em;text-wrap:balance;max-width:16ch}
+.hero .lead{margin:1.4rem 0 0;max-width:38rem;font-size:1.2rem;line-height:1.6;color:var(--ink)}
+.parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:1rem;margin-top:2.25rem}
+.part{display:block;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:1.1rem 1.2rem;text-decoration:none;color:var(--ink)}
+.part:hover{border-color:var(--ink)}
+.part small{display:block;font:500 .7rem var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.part b{display:block;margin:.3rem 0;font:700 1.15rem/1.2 var(--font-display)}
+.part span{font-size:.95rem;color:var(--muted);line-height:1.5;display:block}
+.howto{margin:1.75rem 0 0;max-width:42rem;font-size:.97rem;color:var(--muted)}
+
+/* seksjoner */
+.sec{padding-block:3.5rem 1.25rem;border-top:1px solid var(--line)}
+.eyebrow{font:500 .72rem/1.3 var(--font-mono);letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:0}
+.sec-head h2{margin:.45rem 0 1.4rem;font:700 clamp(1.7rem,3.6vw,2.4rem)/1.1 var(--font-display);letter-spacing:-.012em;text-wrap:balance;max-width:24ch}
+.sec h3{margin:2.2rem 0 .5rem;font:700 1.22rem/1.25 var(--font-display);text-wrap:balance}
+.sec h4{margin:1.4rem 0 .3rem;font:700 1rem/1.3 var(--font-display)}
+.sec p,.sec ul,.sec ol{max-width:42rem;margin:.8rem 0}
+.sec ul,.sec ol{padding-left:1.3rem}
+.sec li{margin:.3rem 0}
+.sec li::marker{color:var(--muted)}
+.sec .lead{font-size:1.15rem;line-height:1.65}
+
+.kort{max-width:42rem;margin:0 0 1.6rem;padding:1rem 1.2rem;background:var(--soft);border:1px solid var(--line);border-radius:6px}
+.kort b{display:block;margin-bottom:.25rem;font:500 .7rem var(--font-mono);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.kort p{margin:0;max-width:none}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,15.5rem),1fr));gap:1rem;margin:1.25rem 0}
+.cards.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr))}
+.card{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:1.1rem 1.2rem}
+.card h3,.card h4{margin:0 0 .4rem;font:700 1.05rem/1.25 var(--font-display)}
+.card p,.card ul{margin:.35rem 0;font-size:.97rem;line-height:1.6;max-width:none}
+.card ul{padding-left:1.15rem}
+.card .tag{display:block;margin-bottom:.35rem;font:500 .68rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+details{max-width:42rem;border-top:1px solid var(--line)}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;padding:.85rem 0;font:700 1.02rem/1.3 var(--font-display)}
+details>*:not(summary){margin-bottom:1rem}
+
+.gpt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;max-width:42rem;margin:1.3rem 0}
+.gpt div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:.9rem 1rem}
+.gpt b{display:block;font:700 2.8rem/1 var(--font-display);letter-spacing:-.02em}
+.gpt span{display:block;margin-top:.4rem;font:500 .9rem/1.35 var(--font-display)}
+.gpt small{display:block;margin-top:.2rem;font-size:.82rem;line-height:1.4;color:var(--muted)}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));gap:1rem;margin:1.4rem 0}
+.fact b{display:block;font:700 2.4rem/1 var(--font-display);letter-spacing:-.02em}
+.fact span{display:block;margin-top:.35rem;font-size:.92rem;line-height:1.45;color:var(--muted);max-width:16rem}
+
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11.5rem),1fr));gap:.75rem;margin:1.2rem 0}
+.lvl{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.lvl i{display:block;height:.6rem}
+.lvl div{padding:.8rem .95rem 1rem}
+.lvl b{display:block;font:700 1.05rem var(--font-display)}
+.lvl p{margin:.3rem 0 0;font-size:.9rem;line-height:1.5;max-width:none}
+.lvl em{display:block;margin-top:.55rem;font:500 .72rem var(--font-mono);letter-spacing:.06em;text-transform:uppercase;font-style:normal}
+
+.bars{list-style:none;padding:0!important;max-width:44rem!important;margin:1.2rem 0!important}
+.bars li{display:grid;grid-template-columns:minmax(0,13rem) minmax(0,1fr) 3.4rem;gap:.3rem .9rem;align-items:center;margin:.8rem 0}
+.bars .lab{font:500 .92rem/1.3 var(--font-display)}
+.bars .lab small{display:block;font:400 .7rem var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bars .track{height:1.15rem;background:var(--soft);border-radius:3px;overflow:hidden}
+.bars .fill{display:block;height:100%;width:var(--w);background:var(--link)}
+.bars .val{font:700 1.05rem var(--font-display);text-align:right}
+
+.tbl{overflow-x:auto;margin:1.2rem 0;max-width:100%;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.tbl table{border-collapse:collapse;width:100%;min-width:40rem;font-size:.95rem;line-height:1.5}
+.tbl th,.tbl td{padding:.7rem .9rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.tbl th{font:500 .72rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--soft)}
+.tbl tr:last-child td{border-bottom:0}
+
+.prompt{max-width:42rem;margin:1.1rem 0;padding:1rem 1.2rem 1.15rem;background:var(--deep);color:var(--deep-ink);border-radius:8px}
+.prompt header{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.prompt header span{font:500 .7rem var(--font-mono);letter-spacing:.13em;text-transform:uppercase;opacity:.8}
+.prompt button{font:700 .8rem var(--font-display);background:var(--marker);color:var(--marker-ink);border:0;border-radius:4px;padding:.4rem .75rem;cursor:pointer}
+.prompt pre{margin:.7rem 0 0;white-space:pre-wrap;font:400 .9rem/1.6 var(--font-mono)}
+
+/* video */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:1.5rem 1.25rem;margin:1.6rem 0}
+.vgrid.one{grid-template-columns:minmax(0,40rem)}
+.vid{margin:0;min-width:0}
+.vid-frame{position:relative;aspect-ratio:16/9;max-width:100%;background:var(--deep);border-radius:8px;overflow:hidden}
+.vid-frame iframe,.vid-play{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid-play{padding:0;cursor:pointer;background:var(--deep);color:#fff;font:inherit;display:block}
+.vid-play img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.88}
+.vid-play::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(8,14,32,.82),rgba(8,14,32,0) 60%)}
+.vid-icon{position:absolute;z-index:2;left:50%;top:46%;width:4.2rem;height:4.2rem;margin:-2.1rem 0 0 -2.1rem;border-radius:50%;background:var(--marker);color:var(--marker-ink);display:grid;place-items:center;transition:transform .15s}
+.vid-play:hover .vid-icon{transform:scale(1.08)}
+.vid-icon svg{width:1.6rem;height:1.6rem;margin-left:.2rem}
+.vid-title{position:absolute;z-index:2;left:1rem;right:1rem;bottom:.8rem;text-align:left;font:700 .98rem/1.25 var(--font-display);text-wrap:balance}
+.vid figcaption{display:flex;flex-direction:column;gap:.15rem;margin-top:.6rem;font-size:.92rem;line-height:1.5;color:var(--muted)}
+.vid figcaption strong{font:700 .98rem/1.3 var(--font-display);color:var(--ink)}
+.vid figcaption a{font:500 .78rem var(--font-mono);letter-spacing:.04em}
+
+.srcnote{max-width:none!important;margin:1.8rem 0 0!important;padding-top:.8rem;border-top:1px dashed var(--line);display:flex;flex-wrap:wrap;gap:.2rem .9rem;align-items:baseline;font:400 .8rem/1.5 var(--font-mono);color:var(--muted)}
+.srcnote span{letter-spacing:.12em;text-transform:uppercase;font-weight:500}
+.srcnote a{color:var(--muted)}
+.srcnote a:hover{color:var(--link)}
+
+.biglist{list-style:none;padding:0!important;max-width:none!important}
+.biglist li{margin:.35rem 0}
+.vindex ol{columns:2 22rem;column-gap:2.5rem;max-width:none!important;padding-left:1.3rem}
+.vindex li{break-inside:avoid;margin:.45rem 0}
+.vindex small{display:block;font:400 .74rem var(--font-mono);color:var(--muted)}
+
+.refs{list-style:none;padding:0!important;max-width:50rem!important}
+.refs li{margin:0;padding:.85rem 0;border-bottom:1px solid var(--line);font-size:.97rem;line-height:1.55}
+.refs .host{display:block;font:400 .78rem var(--font-mono);margin-top:.15rem;word-break:break-all}
+.refs .used{display:block;margin-top:.2rem;font:400 .74rem/1.5 var(--font-mono);color:var(--muted)}
+.refs .used a{color:var(--muted)}
+
+.foot{margin-top:3rem;padding-block:2rem 3rem;border-top:1px solid var(--line);font-size:.9rem;color:var(--muted)}
+.foot p{max-width:42rem;margin:.4rem 0}
+
+/* videopopup */
+.vmodal{padding:0;border:0;background:transparent;color:var(--deep-ink);width:min(64rem,calc(100vw - 2rem));max-width:none;max-height:calc(100dvh - 2rem);overflow:visible}
+.vmodal::backdrop{background:rgba(5,10,24,.82);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.vmodal[open]{animation:vpop .18s ease-out}
+@keyframes vpop{from{opacity:0;transform:translateY(.75rem) scale(.98)}to{opacity:1;transform:none}}
+.vbox{background:var(--deep);border-radius:10px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.vhead{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem .8rem .7rem 1.1rem}
+.vhead h2{margin:0;font:700 1.02rem/1.25 var(--font-display);min-width:0;text-wrap:balance}
+.vclose{flex:none;font:700 .85rem var(--font-display);background:var(--marker);color:var(--marker-ink);border:0;border-radius:4px;padding:.5rem .85rem;cursor:pointer}
+.vstage{position:relative;aspect-ratio:16/9;background:#000}
+.vstage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vfoot{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;align-items:baseline;justify-content:space-between;padding:.7rem 1.1rem .85rem;font-size:.9rem;line-height:1.5}
+.vfoot p{margin:0;max-width:42rem;opacity:.85}
+.vfoot a{color:var(--marker);font:500 .8rem var(--font-mono);letter-spacing:.04em}
+.vnoplay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:1.5rem;text-align:center;background:var(--deep);color:var(--deep-ink)}
+.vnoplay img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.25}
+.vnoplay>*{position:relative}
+.vnoplay p{margin:0;max-width:32rem;font-size:.98rem;line-height:1.55}
+.vnoplay a.big{display:inline-block;background:var(--marker);color:var(--marker-ink);font:700 1.05rem var(--font-display);text-decoration:none;padding:.8rem 1.4rem;border-radius:6px}
+html.vopen{overflow:hidden}
+@media (max-width:40rem){
+  .vmodal{width:calc(100vw - 1rem)}
+  .vhead{padding-left:.85rem}
+  .vfoot{padding-inline:.85rem}
+}
+@media (max-height:32rem) and (orientation:landscape){.vfoot{display:none}.vmodal{width:min(64rem,calc((100dvh - 5rem)*16/9))}}
+
+@media (max-width:62rem){
+  .shell{display:block}
+  .topbar{display:flex;align-items:center;gap:.8rem;position:sticky;top:0;z-index:30;background:var(--surface);border-bottom:1px solid var(--line);padding:calc(.55rem + env(safe-area-inset-top,0px)) max(1rem,env(safe-area-inset-right,0px)) .55rem max(1rem,env(safe-area-inset-left,0px))}
+  .topbar button{font:700 .9rem var(--font-display);background:var(--marker);color:var(--marker-ink);border:0;border-radius:4px;padding:.5rem .8rem;cursor:pointer}
+  .topbar b{font:700 1rem var(--font-display);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .side{position:fixed;left:0;top:0;bottom:0;height:100%;width:min(21rem,88vw);z-index:50;transform:translateX(-104%);visibility:hidden;transition:transform .2s ease,visibility 0s .2s;padding-top:calc(1.5rem + env(safe-area-inset-top,0px));padding-left:max(1.25rem,env(safe-area-inset-left,0px))}
+  .side.open{transform:none;visibility:visible;transition:transform .2s ease;box-shadow:0 0 40px rgba(0,0,0,.35)}
+  html{scroll-padding-top:4.5rem}
+}
+@media (max-width:40rem){
+  body{font-size:1.02rem}
+  .gpt{grid-template-columns:1fr}
+  .bars li{grid-template-columns:minmax(0,1fr) 3.2rem}
+  .bars .track{grid-column:1 / -1;grid-row:2}
+  .bars .val{grid-row:1;grid-column:2}
+  .vindex ol{columns:1}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#innhold">Hopp til innholdet</a>
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+<header class="topbar">
+  <button type="button" id="menuBtn" aria-expanded="false" aria-controls="side">Innhold</button>
+  <b>KI i elevens læringsarbeid</b>
+</header>
+<div class="scrim" id="scrim" hidden></div>
+
+<div class="shell">
+<nav class="side" id="side" aria-label="Innholdsfortegnelse">
+  <div class="brand">
+    <b>KI i elevens læringsarbeid</b>
+    <span>Fagguide for lærere</span>
+  </div>
+<div class="navgroup"><h2>Start</h2><ul>
+<li><a href="#om-kurset">Om kurset</a></li>
+<li><a href="#velge-verktoy">Hvilket verktøy skal jeg velge?</a></li>
+<li><a href="#kartlegging">Et kart over generativ KI</a></li>
+</ul></div>
+<div class="navgroup"><h2>Del 1 · KI og læringsarbeid</h2><ul>
+<li><a href="#hva-er-genki">Hva er generativ KI?</a></li>
+<li><a href="#laering-vs-produktivitet">Læring eller produktivitet?</a></li>
+<li><a href="#lareplan">KI og læreplanen</a></li>
+<li><a href="#ferdigheter">Fem grunnleggende ferdigheter</a></li>
+<li><a href="#skrive">Å skrive med KI</a></li>
+<li><a href="#lese-del1">Å lese og arbeide med tekst</a></li>
+<li><a href="#digitale">Digitale ferdigheter i fagene</a></li>
+<li><a href="#danmark">Det danske perspektivet</a></li>
+<li><a href="#hyland">Skriving i KI-ens tid</a></li>
+</ul></div>
+<div class="navgroup"><h2>Del 2 · Elevenes stemme</h2><ul>
+<li><a href="#ungdomsstemme">Unge om generativ KI</a></li>
+<li><a href="#dialogopplegg">Dialogopplegg om generativ KI</a></li>
+<li><a href="#dialogspill">Dialogspillet «Snakk om KI»</a></li>
+<li><a href="#samtalekort">Samtalekort og egenevaluering</a></li>
+</ul></div>
+<div class="navgroup"><h2>Modul 2 · Tilrettelagt undervisning</h2><ul>
+<li><a href="#m2-oversikt">Oversikt og fagspesifikke chatboter</a></li>
+<li><a href="#kompenserende">KI som utjevnende teknologi</a></li>
+<li><a href="#forenkle">Forenkle og differensiere tekster</a></li>
+<li><a href="#nevro">Struktur for elever med ADHD</a></li>
+<li><a href="#uu">Universell utforming</a></li>
+<li><a href="#transkribering">Teksting og transkribering</a></li>
+<li><a href="#partner">Chatbot som læringspartner</a></li>
+<li><a href="#skriveprosess">Skriving med KI som støtte</a></li>
+<li><a href="#talesyntese">Å lese med ørene</a></li>
+<li><a href="#leseverktoy">KI i leseopplæringen</a></li>
+<li><a href="#ledetekst">Elevens ledetekstkompetanse</a></li>
+<li><a href="#oppsummere">Oppsummering som lesestrategi</a></li>
+<li><a href="#oversetter">KI som oversetter</a></li>
+<li><a href="#tankekart">Tankekart og grafiske organisatorer</a></li>
+<li><a href="#matte">Matematikk: forklar oppgaven</a></li>
+<li><a href="#notebooklm">Googles NotebookLM</a></li>
+</ul></div>
+<div class="navgroup"><h2>Samlet oversikt</h2><ul>
+<li><a href="#videoer">Alle videoene</a></li>
+<li><a href="#kilder">Kilder</a></li>
+</ul></div>
+</nav>
+
+<main class="main" id="innhold">
+<div class="wrap">
+
+<section class="hero" aria-labelledby="tittel">
+  <p class="eyebrow">Emne KIELEV10125-1 · Høgskolen i Østfold</p>
+  <h1 id="tittel">Kunstig intelligens i elevens <mark>læringsarbeid</mark></h1>
+  <p class="lead">En guide for lærere som vil forstå hva generativ KI er, hva den gjør med læring, og hvordan den kan brukes klokt sammen med elevene. Her er kursets fagstoff forklart, med videoene spilt av på siden og alle kilder samlet.</p>
+  <div class="parts">
+    <a class="part" href="#om-kurset"><small>Start</small><b>Om kurset og verktøyene</b><span>Mål, personvern og et kart over feltet.</span></a>
+    <a class="part" href="#hva-er-genki"><small>Del 1</small><b>KI og læringsarbeid</b><span>Hva KI er, hva den gjør med læring, og hvordan den møter læreplanen.</span></a>
+    <a class="part" href="#ungdomsstemme"><small>Del 2</small><b>Elevenes stemme</b><span>Undervisningsopplegg som får elevene til å snakke om KI.</span></a>
+    <a class="part" href="#m2-oversikt"><small>Modul 2</small><b>Tilrettelagt undervisning</b><span>Lesing, skriving, universell utforming og NotebookLM.</span></a>
+  </div>
+  <p class="howto">Bruk innholdsfortegnelsen for å hoppe mellom temaer. Videoene starter når du trykker på dem. Under hvert tema står kildene som temaet bygger på, og hele kildelisten ligger helt nederst.</p>
+</section>
+
+<section class="sec" id="om-kurset" aria-labelledby="h-om-kurset"><header class="sec-head"><p class="eyebrow">Start</p><h2 id="h-om-kurset">Om kurset</h2></header>
+  <p class="lead">Kurset vil gi deg en ny forståelse av hvordan KI kan brukes pedagogisk i skolen. Du utforsker både teori og praksis, med vekt på kritisk, kreativ og ansvarlig bruk sammen med elevene.</p>
+  <h3>Fire ting du skal kunne etterpå</h3>
+  <div class="cards">
+    <div class="card"><span class="tag">Veiledning</span><p>Veilede elever i kritisk og ansvarlig bruk av KI i eget læringsarbeid.</p></div>
+    <div class="card"><span class="tag">Grunnleggende ferdigheter</span><p>Bruke KI i læringsaktiviteter som støtter elevenes grunnleggende ferdigheter.</p></div>
+    <div class="card"><span class="tag">Tilpasning</span><p>Bruke KI til å tilpasse undervisningen til individuelle opplæringsbehov.</p></div>
+    <div class="card"><span class="tag">Vurdering</span><p>Forstå hvilke konsekvenser KI har for vurderingsarbeid i skolen.</p></div>
+  </div>
+  <figure class="vid" data-yt="ehMGaQzWnIs" data-title="Velkommen til kurset"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Velkommen til kurset"><img src="https://i.ytimg.com/vi/ehMGaQzWnIs/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Velkommen til kurset</span></button></div><figcaption><strong>Velkommen til kurset</strong><span>Åpningsvideoen fra kursansvarlige.</span><a href="https://youtu.be/ehMGaQzWnIs" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+</section>
+
+<section class="sec" id="velge-verktoy" aria-labelledby="h-velge-verktoy"><header class="sec-head"><p class="eyebrow">Start</p><h2 id="h-velge-verktoy">Hvilket verktøy skal jeg velge?</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Som lærer kan du prøve ut det du vil i egen planlegging, så lenge du ikke limer inn opplysninger om elever. Elevene skal bare bruke verktøy som skoleeier har godkjent.</p></div>
+  <p>Det finnes mange språkmodeller og chatboter. Valget handler om pedagogikk, jus og praktiske forhold. Utgangspunktet er at du bruker verktøyene arbeidsgiveren har databehandleravtale for. Da er verktøyet vurdert etter personvernforordningen (GDPR), og kommunen, fylkeskommunen eller skolen har som behandlingsansvarlig sagt ja til bruken.</p>
+  <div class="cards two">
+    <div class="card"><span class="tag">Deg som lærer</span>
+      <p>Du har metodefrihet i planlegging, idéutvikling og forberedelse. Du kan teste chatboter, hente inspirasjon til opplegg, formulere vurderingskriterier og forbedre egne tekster.</p>
+      <p>Mange skoler har tilgang via <strong>Microsoft 365 (Copilot)</strong> eller <strong>Google Workspace for Education (Gemini)</strong>. Vil du ha mer funksjonalitet, kan du kjøpe en avansert versjon, for eksempel ChatGPT Plus. Poenget er at ingen personopplysninger om elever skal inn.</p></div>
+    <div class="card"><span class="tag">Elevene</span>
+      <p>Her gjelder strengere regler. Elevene skal ikke bruke KI-programvare som skoleeier ikke har klarert. Det handler om personvern, datasikkerhet og ansvarsfordeling.</p>
+      <p>Norske tjenester laget for skolen er blant annet <strong>Skolebot</strong>, <strong>Praterobot på NDLA</strong> og <strong>CC Tenkemotoren</strong> fra Randaberg kommune.</p></div>
+  </div>
+  <h3>Tjenester studentene får med Feide-innlogging</h3>
+  <p>Studenter ved Høgskolen i Østfold kan bruke disse trygt og gratis med Feide, og de anbefales fordi de oppfyller kravene til personvern:</p>
+  <ul class="biglist">
+    <li>GPT UiO, for universitetssektoren</li>
+    <li>Microsoft Copilot</li>
+    <li>Skolebot, for grunnskolen</li>
+    <li>NotebookLM med Gemini fra Google</li>
+    <li>Gemini fra Google</li>
+  </ul>
+  <p class="srcnote"><span>Kilder</span><a href="https://gpt.uio.no/" target="_blank" rel="noopener">GPT UiO</a><a href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Microsoft Copilot</a><a href="https://skolebot.no/" target="_blank" rel="noopener">Skolebot</a><a href="https://notebooklm.google.com/" target="_blank" rel="noopener">NotebookLM</a><a href="https://gemini.google.com/" target="_blank" rel="noopener">Google Gemini</a><a href="https://cc.tenkemotoren.no/" target="_blank" rel="noopener">CC Tenkemotoren</a><a href="https://ndla.no/minndla" target="_blank" rel="noopener">Praterobot NDLA</a><a href="https://www.feide.no/" target="_blank" rel="noopener">Feide</a></p>
+</section>
+
+<section class="sec" id="kartlegging" aria-labelledby="h-kartlegging"><header class="sec-head"><p class="eyebrow">Start</p><h2 id="h-kartlegging">Et kart over generativ KI</h2></header>
+  <p>Hva er generativ KI egentlig? Kurset starter med et svært detaljrikt oversiktskart laget av Estampa, et spansk kunstnerkollektiv av programmerere, filmskapere og forskere.</p>
+  <p>Bruk tid på å utforske bredden i kartet. Legg merke til hva du er nysgjerrig på, hva du er kritisk til, og hva du vil lære mer om. Målet er et kritisk helhetsbilde på samfunnsnivå, før kurset går inn på hva KI betyr for læringsarbeidet i klasserommet.</p>
+  <p><a href="https://cartography-of-generative-ai.net/genai_cartography.pdf" target="_blank" rel="noopener">Åpne «A Cartography of Generative AI» (PDF)</a></p>
+  <p class="srcnote"><span>Kilder</span><a href="https://cartography-of-generative-ai.net/genai_cartography.pdf" target="_blank" rel="noopener">Estampa (2024)</a></p>
+</section>
+
+<section class="sec" id="hva-er-genki" aria-labelledby="h-hva-er-genki"><header class="sec-head"><p class="eyebrow">Del 1 · KI og læringsarbeid</p><h2 id="h-hva-er-genki">Hva er generativ KI?</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Generativ KI forutsier neste ord ut fra et enormt tekstmateriale. Det gir imponerende tekst, men også feil, skjevheter og «hallusinasjoner» du må kunne oppdage.</p></div>
+  <p class="lead">Kunstig intelligens er teknologi som kan justere sin egen aktivitet og utføre oppgaver som vanligvis krever menneskelig intelligens. Eyvind Elstad skiller mellom to undergrupper.</p>
+  <div class="cards two">
+    <div class="card"><span class="tag">Regelbasert KI</span><h3>Forhåndsdefinerte svar</h3><p>Samtaleroboter hos banker og skattemyndigheter. De svarer på spørsmål etter faste regler.</p></div>
+    <div class="card"><span class="tag">Generativ KI</span><h3>Ny og variert tekst</h3><p>ChatGPT, Bard og LLaMA er språkmodeller som lager naturlig og variert tekst, basert på tidligere samtale.</p></div>
+  </div>
+  <h3>Hva betyr GPT?</h3>
+  <div class="gpt">
+    <div><b>G</b><span>Generative</span><small>Modellen kan lage nytt innhold.</small></div>
+    <div><b>P</b><span>Pre-trained</span><small>Forhåndstrent på svært mye tekst.</small></div>
+    <div><b>T</b><span>Transformer</span><small>Nettverksarkitekturen som løftet feltet.</small></div>
+  </div>
+  <p>Transformer-arkitekturen gjør at modellen ser hvert ord i lys av ordene før og etter. Den mekanismen heter <mark>oppmerksomhet</mark>, og den lar modellen veie hvilke ord som betyr mest. Resultatet er at modellen blir god til å <mark>forutsi neste ord</mark> i en setning. ChatGPT ble lansert 30. november 2022, og mange, Elstad selv inkludert, ble overrasket over hva den kunne.</p>
+  <h3>Hva du må være obs på</h3>
+  <ul>
+    <li><strong>Skjevheter.</strong> Treningsmaterialet har innebygde skjevheter og kulturelle slagsider. Elstad viser til forskning der ChatGPT ble vurdert som venstrevridd og LLaMA som noe mer høyrevridd.</li>
+    <li><strong>Hallusinasjon.</strong> Spør du om forklaringen på fotosyntesen, får du gode svar. Spør du om en norsk samtidsforfatters verker, kunne svarene i 2023 være svært misvisende.</li>
+    <li><strong>Ikke best overalt.</strong> Elstad har bedre tekster om Ibsen i bokhyllen enn det ChatGPT lager. KI er én av flere tilganger til kunnskap.</li>
+  </ul>
+  <p>Derfor blir kritisk kompetanse viktig for alle som skal leve med teknologien, og derfor må skolen lære elevene det.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://utdanningsforskning.no/artikler/2024/skolens-mote-med-generativ-kunstig-intelligens/" target="_blank" rel="noopener">Elstad (2024)</a></p>
+</section>
+
+<section class="sec" id="laering-vs-produktivitet" aria-labelledby="h-laering-vs-produktivitet"><header class="sec-head"><p class="eyebrow">Del 1 · KI og læringsarbeid</p><h2 id="h-laering-vs-produktivitet">Læring eller produktivitet?</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>I arbeidslivet er målet et ferdig produkt, og da er KI en gevinst. I skolen er det arbeidet eleven gjør som gir læring, så produktet kan ikke stå i sentrum.</p></div>
+  <p>Sjakkprogrammer slår verdens beste spillere. Kalkulatorer løser regnestykker. KI tegner portretter og skriver argumenterende tekster. Gir det da fortsatt mening at barn lærer å spille sjakk, regne, tegne og skrive? Elstads svar er et klart ja.</p>
+  <p>I forsøk blir yrkesoppgaver som søknader, pressemeldinger og markedsplaner både raskere og bedre utført med ChatGPT. Det gir produktivitetsgevinster, og yrkesutdanninger må lære studentene å bruke teknologien. Skolen har et annet oppdrag. Hvis den ferdige teksten blir viktigere enn læringsarbeidet bak, svekkes læringen.</p>
+  <h3>To typer elever</h3>
+  <div class="cards two">
+    <div class="card"><span class="tag">Vitebegjærlig</span><p>Bruker KI som hjelp i en dypere læringsprosess, for eksempel til å forstå, prøve ut og forbedre.</p></div>
+    <div class="card"><span class="tag">Kalkulerende</span><p>Bruker teknologien til å få best mulig resultat med minst mulig innsats, for eksempel ved å kopiere uten kilde.</p></div>
+  </div>
+  <p>Mange elever er begge deler, avhengig av situasjonen. Det er læreren som skaper rammene som trekker elevene mot det første.</p>
+  <h3>Pedagogisk skjønn</h3>
+  <p>Svaret er det samme som for kalkulatoren: Læreren bestemmer når elevene får bruke den, og når de skal arbeide uten. Noen ganger bør skriveferdighet utvikles uten teknologisk hjelp, andre ganger med. Å stenge KI ute fungerer ikke, for «tannkremen er ute av tuben». Skolen må lære å håndtere den.</p>
+  <h3>Et eksempel: prosessorientert skriving</h3>
+  <p>Eleven bruker ChatGPT til idédugnad i starten. Teksten redigeres og gjøres personlig gjennom egne ordvalg, argumentasjon og utvalg av fakta. KI kan peke på feil i grammatikk, stavemåte og syntaks og foreslå klarere formuleringer, gjerne med endringene markert. For at det skal bli læring, må eleven <mark>reflektere over endringene</mark>. Dette er ett virkemiddel blant flere og erstatter ikke skriveopplæringen.</p>
+  <details>
+    <summary>Hva lærere må kunne</summary>
+    <ul>
+      <li>Lage effektive ledetekster</li>
+      <li>Håndtere utfordringene når samtaleroboter brukes i klasserommet og utenfor</li>
+      <li>Holde seg oppdatert på nye funksjoner og bruksmåter</li>
+      <li>Veilede elever som bruker KI i selvstyrt læring</li>
+      <li>Utforme vurderingssituasjoner som viser hva elevene faktisk kan</li>
+    </ul>
+  </details>
+  <details>
+    <summary>KI som beslutningsstøtte for læreren</summary>
+    <ul>
+      <li>Analysere hvilke forkunnskaper elevene trenger for at undervisningen treffer</li>
+      <li>Lage utkast til undervisningsplan for en time eller en periode</li>
+      <li>Foreslå presentasjoner av lærestoff</li>
+      <li>Støtte formativ vurdering, blant annet med analytiske vurderingskriterier elevene kan bruke</li>
+      <li>Lage læringsmateriell og oppgaver tilpasset elevenes nivå</li>
+      <li>Gi idéer til kreative opplegg og forenkle komplekst fagstoff</li>
+      <li>Lage utkast til informasjonsskriv til elever og foreldre</li>
+    </ul>
+  </details>
+  <h3>Hva med fremtiden?</h3>
+  <p>Elstad peker på en spenning. Personlig tilpassede læringsopplevelser kan gi mer enn helklasseundervisning. Samtidig kan mer individuell interaksjon med digitale enheter svekke de felles opplevelsene i klasserommet, som er viktige for sosial intelligens. Han spør om læreren går fra «sage on the stage» til «guide on the side», men har vanskelig for å se at menneskelig kontakt kan erstattes av maskiner.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://utdanningsforskning.no/artikler/2024/skolens-mote-med-generativ-kunstig-intelligens/" target="_blank" rel="noopener">Elstad (2024)</a></p>
+</section>
+
+<section class="sec" id="lareplan" aria-labelledby="h-lareplan"><header class="sec-head"><p class="eyebrow">Del 1 · KI og læringsarbeid</p><h2 id="h-lareplan">KI og læreplanen</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Læreplanen nevner ikke KI i hvert fag, men verdigrunnlaget og flere kompetansemål gir naturlige innganger. Elevene skal forstå hva KI er, kunne bruke den og handle etisk.</p></div>
+  <p>Skolen skal forberede elevene på et samfunns- og arbeidsliv der digital teknologi spiller en stor rolle. Praksis bygger på verdigrunnlaget i formålsparagrafen: demokratiske verdier, kritisk tenkning og etisk bevissthet.</p>
+  <p>Udir foreslår at KI inngår i flere fag, med temaer som teknologi, personvern, kildekritikk, opphavsrett, algoritmisk tenkning, programmering og etikk. Elevene bør vite hva KI er som teknologi, ha praktiske ferdigheter, handle med etisk bevissthet og reflektere over konsekvenser for individ og samfunn.</p>
+  <h3>Eksempler på kompetansemål som åpner for KI</h3>
+  <div class="cards">
+    <div class="card"><span class="tag">Kunst og håndverk · 10. trinn</span><p>Utforske hvordan digitale verktøy og ny teknologi gir muligheter i skapende prosesser og produkter.</p></div>
+    <div class="card"><span class="tag">Musikk · 7. trinn</span><p>Bruke teknologi og digitale verktøy til å skape, øve inn og bearbeide musikk.</p></div>
+    <div class="card"><span class="tag">Engelsk · 10. trinn og Vg1</span><p>Bruke digitale ressurser og hjelpemidler i språklæring, tekstskaping og samhandling.</p></div>
+    <div class="card"><span class="tag">Matematikk · 8. trinn</span><p>Utforske hvordan algoritmer kan lages, testes og forbedres gjennom programmering.</p></div>
+    <div class="card"><span class="tag">Naturfag · 7. trinn</span><p>Reflektere over hvordan teknologi kan løse utfordringer, skape muligheter og føre til nye dilemmaer.</p></div>
+    <div class="card"><span class="tag">Samfunnsfag · 10. trinn</span><p>Utforske teknologi som endringsfaktor og drøfte innvirkningen på enkeltmennesket, samfunn og natur.</p></div>
+  </div>
+  <p class="srcnote"><span>Kilder</span><a href="https://www.udir.no/kvalitet-og-kompetanse/digitalisering-skole/kunstig-intelligens-i-skolen/hvorfor-ki-skolen/" target="_blank" rel="noopener">Udir: Hvorfor må skolene jobbe med KI?</a><a href="https://www.udir.no/kvalitet-og-kompetanse/digitalisering-skole/kunstig-intelligens-i-skolen/rad-om-kunstig-intelligens-skolen/" target="_blank" rel="noopener">Udir: Kunnskap om KI som teknologi</a></p>
+</section>
+
+<section class="sec" id="ferdigheter" aria-labelledby="h-ferdigheter"><header class="sec-head"><p class="eyebrow">Del 1 · KI og læringsarbeid</p><h2 id="h-ferdigheter">Fem grunnleggende ferdigheter</h2></header>
+  <p>Læreplanverket har fem grunnleggende ferdigheter: <strong>lesing, skriving, regning, muntlige ferdigheter og digitale ferdigheter</strong>. De er en del av den faglige kompetansen og nødvendige for læring, for identitet og sosiale relasjoner, og for å delta i utdanning, arbeid og samfunnsliv.</p>
+  <p>De hører hjemme i alle fag, men fagene har ulike roller. Ferdighetene skal ses i sammenheng med hverandre og på tvers av fag, og lærere i alle fag har ansvar for å støtte dem. Utviklingen går i en sammenhengende linje, for eksempel fra første lese- og skriveopplæring til lesing av avanserte faglige tekster.</p>
+  <p>Spørsmålet resten av Del 1 stiller er: <mark>Hvordan kan KI støtte utviklingen av disse ferdighetene, og hvordan kan den påvirke dem?</mark></p>
+  <p class="srcnote"><span>Kilder</span><a href="https://www.udir.no/lk20/overordnet-del/prinsipper-for-laring-utvikling-og-danning/grunnleggende-ferdigheter/" target="_blank" rel="noopener">Overordnet del 2.3</a></p>
+</section>
+
+<section class="sec" id="skrive" aria-labelledby="h-skrive"><header class="sec-head"><p class="eyebrow">Del 1 · KI og læringsarbeid</p><h2 id="h-skrive">Å skrive med KI</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Verdien av en skriveoppgave ligger i stegene eleven tar, ikke i sluttproduktet. Når KI kan lage teksten, må oppgaver og vurdering flytte fokus til det som er unikt menneskelig.</p></div>
+  <p>KI har lenge vært en del av skrivingen, i stavekontroll, grammatikkretting, synonymoppslag og oversettelse. Med ChatGPT, Copilot og Gemini endret det seg. Nå kan KI skrive en hel tekst, rette grammatikk, strukturere, gi råd om overbevisende argumentasjon, tilpasse tonen til en målgruppe og lage førsteutkast fra stikkord.</p>
+  <h3>Samskriving</h3>
+  <p>Samskriving betyr nå også at KI kan være med i skriveprosessen. Den kan ikke erstatte menneskelig refleksjon og dømmekraft. Kurset stiller spørsmål som ikke har fasitsvar:</p>
+  <ul>
+    <li>Hvor går grensen mellom å bruke KI til å forbedre egen skriving og å la KI skrive for deg?</li>
+    <li>Når er teksten «din egen»?</li>
+    <li>Hvordan kan samskriving fremme eller hemme skriving som grunnleggende ferdighet?</li>
+    <li>Hvilke nye ferdigheter må elevene utvikle?</li>
+  </ul>
+  <h3>Det menneskelige bidraget</h3>
+  <p>Bowen og Watson mener målet for enhver oppgave, særlig en skriveoppgave, nå må være å fremheve det viktige menneskelige bidraget samtidig som man tar KI på alvor. Oppgavene bør kreve kritisk og kreativ tenkning, etisk refleksjon og evnen til å stille de rette spørsmålene. Eksempler:</p>
+  <ul>
+    <li>Argumentere for et standpunkt ut fra personlige verdier eller komplekse etiske vurderinger</li>
+    <li>Utvikle idéer som går utover det KI kan lage fra eksisterende data</li>
+    <li>Samle ulike kilder til en helhet som viser dybdelæring</li>
+    <li>Reflektere over læringsprosessen og begrunne valg</li>
+    <li>Bruke kunnskap i nye og uventede situasjoner</li>
+    <li>Utvikle empati og forståelse for ulike perspektiver</li>
+  </ul>
+  <h3>Fra sluttprodukt til skriveprosess</h3>
+  <p>Hvis elevene skal verdsette læringen, må du tydeliggjøre verdien av prosessen. Fire grep:</p>
+  <div class="cards two">
+    <div class="card"><h4>Utform prosessen</h4><p>Bruk delinnleveringer, refleksjonslogger, dokumentasjon av arbeidsmetoder, utkast med tilbakemelding eller medelevvurdering.</p></div>
+    <div class="card"><h4>Vurder prosess som produkt</h4><p>Gi vurderingskriterier som viser hva som vektlegges underveis.</p></div>
+    <div class="card"><h4>Underveisvurdering</h4><p>Tilbakemeldinger som veileder eleven og viser hva som er verdifullt i arbeidet.</p></div>
+    <div class="card"><h4>Modeller prosessen</h4><p>Vis selv hvordan du tenker og arbeider, også med feil og dårlige utkast.</p></div>
+  </div>
+  <p class="srcnote"><span>Kilder</span><em>Bowen &amp; Watson (2024)</em></p>
+</section>
+
+<section class="sec" id="lese-del1" aria-labelledby="h-lese-del1"><header class="sec-head"><p class="eyebrow">Del 1 · KI og læringsarbeid</p><h2 id="h-lese-del1">Å lese og arbeide med tekst</h2></header>
+  <p>Oslo kommune lanserte tidlig i 2024 en løsning der lærere og elever kan lage egne språkmodeller. Hver rektor måtte godkjenne åpning på sin skole, etter opplæring av både lærere og elever. Kommunen utarbeidet også et regelverk for ansvarlig bruk av KI som viser når KI skal brukes og når ikke.</p>
+  <p>Utdraget om lesing viser en tydelig linje. KI kan støtte forståelsen av komplekse tekster ved å forklare eller forenkle fagbegreper og foreslå oppgaver til en tekst. Elevene kan få hjelp til å finne relevante tekster, men da med en kildekritisk tilnærming. Elevene skal likevel selv lese og forsøke å forstå. KI er et supplement, ikke en erstatning for grunnleggende ferdigheter og kritisk tenkning.</p>
+  <h3>Fem måter å støtte leseprosessen med ledetekst</h3>
+  <ol>
+    <li><strong>Forklare begreper</strong> med en analogi fra hverdagen, tilpasset elevenes alder.</li>
+    <li><strong>Tilpasse språket</strong> til en annen mottaker, for eksempel ungdomsskoleelever, eller lage en trinn-for-trinn-veiledning for en elev med behov for tilrettelegging.</li>
+    <li><strong>Oppsummere</strong> hovedbudskapet i tre setninger, eller lage en punktliste med de fem viktigste læringspunktene.</li>
+    <li><strong>Lage oppgaver</strong> som krever refleksjon og anvendelse, ikke bare gjengivelse.</li>
+    <li><strong>Lage rask forståelsessjekk</strong>, for eksempel en lue-oppgave eller flervalg om de sentrale begrepene.</li>
+  </ol>
+  <p>Lesing med KI behandles grundigere i Modul 2, under <a href="#talesyntese">Å lese med ørene</a> og <a href="#leseverktoy">KI i leseopplæringen</a>.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://ki.osloskolen.no/" target="_blank" rel="noopener">Osloskolens KI-tjeneste</a></p>
+</section>
+
+<section class="sec" id="digitale" aria-labelledby="h-digitale"><header class="sec-head"><p class="eyebrow">Del 1 · KI og læringsarbeid</p><h2 id="h-digitale">Digitale ferdigheter i fagene</h2></header>
+  <p>Læreplanen gir ingen entydig definisjon av digitale ferdigheter. Ferdighetene hører hjemme i alle fag, og hver lærer må tolke hva faget bidrar med. Tre fag viser hvor ulikt det kan se ut.</p>
+  <div class="cards">
+    <div class="card"><span class="tag">Samfunnsfag</span><h3>Digitalt medborgerskap</h3><p>Finne, behandle og navigere i digitale kilder, utøve kildekritikk, følge regler for nettbasert kommunikasjon, personvern og opphavsrett, og ivareta informasjonssikkerhet.</p></div>
+    <div class="card"><span class="tag">Kunst og håndverk</span><h3>Skapende bruk</h3><p>Bruke digitale verktøy og medier til inspirasjon, utprøving, dokumentasjon og presentasjon, og programmering i skapende prosesser. Kjennskap til opphavsrett og personvern for bilder og film.</p></div>
+    <div class="card"><span class="tag">Matematikk</span><h3>Utforske og løse</h3><p>Bruke graftegner, regneark, CAS, dynamisk geometri og programmering til å utforske og løse problemer, og velge formålstjenlige verktøy etter hvert.</p></div>
+  </div>
+  <p>Test dette på dine egne fag: Hvilken rolle har faget ditt i å utvikle elevenes digitale ferdigheter, og hvilke metoder bidrar til det? Finn beskrivelsen i læreplanen under «Om faget, Grunnleggende ferdigheter».</p>
+  <p><a href="https://sokeresultat.udir.no/finn-lareplan.html" target="_blank" rel="noopener">Søk i læreplaner hos Udir</a></p>
+  <p class="srcnote"><span>Kilder</span><a href="https://www.udir.no/lk20/saf01-05/om-faget/grunnleggende-ferdigheter" target="_blank" rel="noopener">Samfunnsfag: grunnleggende ferdigheter</a><a href="https://www.udir.no/lk20/khv01-03/om-faget/grunnleggende-ferdigheter" target="_blank" rel="noopener">Kunst og håndverk: grunnleggende ferdigheter</a><a href="https://www.udir.no/lk20/mat01-06/om-faget/grunnleggende-ferdigheter" target="_blank" rel="noopener">Matematikk: grunnleggende ferdigheter</a><a href="https://sokeresultat.udir.no/finn-lareplan.html" target="_blank" rel="noopener">Udir: Søk i læreplan</a></p>
+</section>
+
+<section class="sec" id="danmark" aria-labelledby="h-danmark"><header class="sec-head"><p class="eyebrow">Del 1 · KI og læringsarbeid</p><h2 id="h-danmark">Det danske perspektivet</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Danmark har prøvd ut et eget fag, teknologiforståelse. Erfaringene er gode, men lærerkompetansen har vært en flaskehals.</p></div>
+  <p>I 2018 satte den danske utdanningsministeren ned en ekspertgruppe som skulle utvikle et pilotfag for teknologikompetanse i grunnskolen. Faget omfatter tre hoveddeler:</p>
+  <ul>
+    <li><strong>Teknologi og automatisering i samfunnet:</strong> sikkerhet, etikk og konsekvenser.</li>
+    <li><strong>Computational thinking:</strong> nettverk, algoritmer, programmering, logisk og algoritmisk tenkning, abstraksjon, mønstergjenkjenning og datamodellering.</li>
+    <li><strong>Kompleks problemløsning:</strong> elevene forstår designprosesser, lager løsninger med digital teknologi og argumenterer for dem.</li>
+  </ul>
+  <p>Et eksempel på undervisning er en fiktiv tidsreise til en fremtid der befolkningen har et dystopisk forhold til ansiktsgjenkjenning. Elevene får roller med ulike holdninger, undersøker teknologiens styrker og begrensninger og algoritmene bak, og reflekterer over samfunnskonsekvensene.</p>
+  <h3>Hvorfor lære dette?</h3>
+  <p>Målet er å danne aktive, kritiske og demokratiske borgere, gi alle barn lik tilgang til kunnskapen som trengs for å bygge med digital teknologi, og styrke elevenes evne til å forstå og handle i et digitalisert samfunn.</p>
+  <p>Midtveis- og sluttevalueringen (2020 og 2021) viste at elever og lærere fant faget relevant og motiverende, men at lærere uten nødvendig kompetanse hadde det krevende.</p>
+  <div class="facts">
+    <div class="fact"><b>3 av 4</b><span>danske foreldre ønsker teknologiforståelse som obligatorisk fag (2025)</span></div>
+    <div class="fact"><b>2 av 3</b><span>mener det er skolens ansvar å sikre lik tilgang til digital forståelse</span></div>
+    <div class="fact"><b>2027/28</b><span>planlagt start for valgfag på ungdomsskolen</span></div>
+    <div class="fact"><b>160 mill.</b><span>kroner satt av til innføringen i perioden 2024–2026</span></div>
+  </div>
+  <p>Faget skal også integreres i andre fag som norsk og matematikk fra 1. klasse. Danmarks Lærerforening og Dansk Magisterforening mener det bør være obligatorisk for alle.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://doi.org/10.7146/lom.v16i28.136097" target="_blank" rel="noopener">Musaeus m.fl. (2023)</a><a href="https://www.folkeskolen.dk/it-teknologiforstaelse/foraeldre-vil-have-obligatorisk-teknologifag-pa-skoleskemaet/4796071" target="_blank" rel="noopener">Folkeskolen.dk (2025)</a></p>
+</section>
+
+<section class="sec" id="hyland" aria-labelledby="h-hyland"><header class="sec-head"><p class="eyebrow">Del 1 · KI og læringsarbeid</p><h2 id="h-hyland">Skriving i KI-ens tid</h2></header>
+  <p>Del 1 avsluttes med en forskningsartikkel av professor Ken Hyland: «Writing in the AI era: Rethinking writing, research and teaching» (2026). Kurset ber deg bruke generativ KI som støtte for å forstå og reflektere over innholdet. Denne siden gjengir ikke artikkelen. Les den i original.</p>
+  <h3>Tre perspektiver å lese med</h3>
+  <div class="cards">
+    <div class="card"><span class="tag">Bruk av KI</span><p>Hvordan kan du bruke generativ KI som støtte for å forstå og reflektere over artikkelen?</p></div>
+    <div class="card"><span class="tag">Hovedpoeng</span><p>Hva er Hylands viktigste argumenter for hvorfor og hvordan vi bør tenke nytt om undervisning i møte med generativ KI?</p></div>
+    <div class="card"><span class="tag">Egen praksis</span><p>Hvordan kan du knytte argumentene til din egen undervisning, og hvilke konsekvenser kan det få?</p></div>
+  </div>
+  <p><a href="https://doi.org/10.1016/j.jslw.2026.101302" target="_blank" rel="noopener">Åpne artikkelen (DOI)</a></p>
+  <p class="srcnote"><span>Kilder</span><a href="https://doi.org/10.1016/j.jslw.2026.101302" target="_blank" rel="noopener">Hyland (2026)</a></p>
+</section>
+
+<section class="sec" id="ungdomsstemme" aria-labelledby="h-ungdomsstemme"><header class="sec-head"><p class="eyebrow">Del 2 · Elevenes stemme</p><h2 id="h-ungdomsstemme">Unge om generativ KI</h2></header>
+  <p class="lead">KI er en stadig større del av elevenes skolehverdag, fritid og fremtid. Del 2 viser ressurser som er laget for å starte den gode klasseromssamtalen og bygge kritisk forståelse.</p>
+  <p>Høsten 2024 deltok <strong>361 danske ungdommer</strong> i en nasjonal Ungdomsdialog om god og ansvarlig bruk av generativ KI. Rapporten «The Voice of Young People in the Conversation on Generative AI» er laget av Demokrati X, Det danske råd for dataetikk og Trygfonden, og retter seg særlig mot lærere og ungdommene selv.</p>
+  <h3>Hva ungdommene sa</h3>
+  <div class="cards">
+    <div class="card"><span class="tag">Læring</span><p>KI er et verdifullt verktøy som kan lette tidspress. Samtidig kan den føre til avhengighet, svekke motivasjonen og redusere læring. Mange vil ha klare retningslinjer og mer opplæring.</p></div>
+    <div class="card"><span class="tag">Deepfakes</span><p>Blandede følelser. Noen synes de er morsomme, andre er bekymret for at de ødelegger tillit og skaper usikkerhet.</p></div>
+    <div class="card"><span class="tag">Relasjoner</span><p>Flertallet bruker ikke generativ KI i personlige relasjoner, fordi den virker lite menneskelig. Noen bruker den til praktiske ting som jobbsøknader og ser en risiko for overflatiske relasjoner.</p></div>
+  </div>
+  <p>Rapporten løfter frem et undervisningsopplegg. Det finner du i neste tema.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://videnogdemokrati.dk/app/uploads/2025/01/DEMX.AI-rapport.final-01c-pixi-1.pdf" target="_blank" rel="noopener">Ungdomsdialogen (2025)</a></p>
+</section>
+
+<section class="sec" id="dialogopplegg" aria-labelledby="h-dialogopplegg"><header class="sec-head"><p class="eyebrow">Del 2 · Elevenes stemme</p><h2 id="h-dialogopplegg">Dialogopplegg om generativ KI</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Opplegget har tre temaer: bruk av KI på skolen, deepfakes og KI i personlige relasjoner. Elevene jobber først i grupper og skriver deretter individuelt.</p></div>
+  <h3>Innledning til elevene</h3>
+  <p>Generativ KI analyserer enorme mengder eksisterende data, finner og gjentar mønstre, og lager nytt innhold ut fra dem. Den kan lage tekst, bilder, musikk og video, og brukes til filmer, spill, spillelister, skreddersydde læremidler og e-poster. Teknologien har skapt debatt om personvern, om vi kan stole på informasjonen, og om vi vet om vi snakker med et menneske eller en chatbot.</p>
+  <p><strong>Oppvarming:</strong> to minutter egenrefleksjon (hva tenker du på, hva er mest spennende, hva bekymrer deg), tre minutter samtale med sidemannen om likt og ulikt, to minutter skriving.</p>
+
+  <h3>Tema 1: Generativ KI og læring</h3>
+  <p>KI kan forklare vanskelige ord, rette feil, gjøre komplekse emner enklere, hjelpe til med idémyldring og gi tilbakemelding. Men hvor går grensen? Hvis KI skriver en del av oppgaven, er det da fortsatt din innsats? Når blir KI en snarvei som tar bort læringen?</p>
+  <figure class="vid" data-yt="6kZFIScIzlQ" data-title="Hva har du lært i dag?"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Hva har du lært i dag?"><img src="https://i.ytimg.com/vi/6kZFIScIzlQ/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Hva har du lært i dag?</span></button></div><figcaption><strong>Hva har du lært i dag?</strong><span>Videoen elevene ser i tema 1 (ca. 3 min).</span><a href="https://youtu.be/6kZFIScIzlQ" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  <ul>
+    <li>Opplever du at generativ KI hjelper deg å lære? Hvordan?</li>
+    <li>Får du den veiledningen og støtten du trenger for å bruke KI godt på skolen? Hva fungerer, og hva mangler?</li>
+  </ul>
+
+  <h3>Tema 2: Deepfakes</h3>
+  <p>Deepfakes er video, bilder eller lyd som er endret eller laget av generativ KI for å se eller høres ekte ut. KI kopierer ansiktet eller stemmen til en person og setter den inn i en ny sammenheng. Tre vanlige typer:</p>
+  <ul>
+    <li><strong>Ansiktsbytte:</strong> et ansikt i video eller bilde byttes ut med et annet.</li>
+    <li><strong>Stemmeskifte:</strong> stemmen endres så den høres ut som en bestemt person.</li>
+    <li><strong>Kroppsmanipulasjon:</strong> en persons bevegelser endres så det ser ut som personen gjorde noe den aldri har gjort.</li>
+  </ul>
+  <p>Deepfakes kan underholde, men også skade omdømme, skape forvirring og spre farlig feilinformasjon. Når vi ikke kan stole på det vi ser og hører, kan folk begynne å tvile på alt digitalt innhold, og det er et problem for samfunnet og demokratiet.</p>
+  <div class="vgrid">
+    <figure class="vid" data-yt="cQ54GDm1eL0" data-title="Deepfake med Jordan Peele og Barack Obama"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Deepfake med Jordan Peele og Barack Obama"><img src="https://i.ytimg.com/vi/cQ54GDm1eL0/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Deepfake med Jordan Peele og Barack Obama</span></button></div><figcaption><strong>Deepfake med Jordan Peele og Barack Obama</strong><span>Skuespilleren Jordan Peele bruker KI til å manipulere Obamas ansikt og stemme. Videoen er syv år gammel, og teknologien er blitt bedre siden.</span><a href="https://youtu.be/cQ54GDm1eL0" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="Nul_UM_6cec" data-title="Video til diskusjonen om deepfakes"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Video til diskusjonen om deepfakes"><img src="https://i.ytimg.com/vi/Nul_UM_6cec/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Video til diskusjonen om deepfakes</span></button></div><figcaption><strong>Video til diskusjonen om deepfakes</strong><span>Brukes sammen med spørsmålene om hva som er appellerende og urovekkende med deepfakes.</span><a href="https://youtu.be/Nul_UM_6cec" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  </div>
+  <ul>
+    <li>Hva tenker dere på når dere hører «deepfakes»? Har du sett eller opplevd det?</li>
+    <li>Hva er så appellerende med å lage deepfakes? Hva slags makt gir det å kunne skape virkeligheten man forestiller seg?</li>
+    <li>Er det noe ved deepfakes som gjør dere utrygge, eller påvirker det dere ikke?</li>
+  </ul>
+  <p>Ekstramateriale: Medietilsynet har et tilsvarende <a href="https://www.medietilsynet.no/globalassets/deepfakes/201106-v4-deepfake-undervisningsopplegg.pdf" target="_blank" rel="noopener">undervisningsopplegg om deepfakes</a>.</p>
+
+  <h3>Tema 3: Generativ KI og relasjoner</h3>
+  <p>KI-venner som Snapchats My AI er laget for å etterligne menneskelig samtale. De husker tidligere samtaler, gjenkjenner følelser og gir svar som føles personlige. Det er likevel en simulering basert på mønstre i data, uten reell forståelse. KI-venner kan brukes til å øve sosiale ferdigheter i trygge rammer, men elevene bør spørre seg hvordan det påvirker oss å snakke med en «venn» som ikke forstår følelser, og om det er trygt å dele personlige opplysninger med en maskin. My AI har fått kritikk for feil og upassende svar og for at den er vanskelig å fjerne uten abonnement.</p>
+  <figure class="vid" data-yt="eJ92MhzAaWQ" data-title="Når generativ KI vikles sammen med personlige relasjoner"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Når generativ KI vikles sammen med personlige relasjoner"><img src="https://i.ytimg.com/vi/eJ92MhzAaWQ/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Når generativ KI vikles sammen med personlige relasjoner</span></button></div><figcaption><strong>Når generativ KI vikles sammen med personlige relasjoner</strong><span>Kort video (ca. 2 min) som innleder siste diskusjon.</span><a href="https://youtu.be/eJ92MhzAaWQ" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  <ul>
+    <li>Har dere brukt My AI eller lignende til personlige samtaler eller råd? Hvordan var det? Hvor går grensen for hva dere vil dele?</li>
+    <li>Tenk deg at en viktig melding fra en nær venn viste seg å være skrevet av KI. Hvordan føles det?</li>
+    <li>Er det greit å bruke KI for å hjelpe med forhold til andre mennesker? Hvordan kan forholdene våre endre seg om KI håndterer flere av samtalene?</li>
+  </ul>
+  <p>Hver runde avsluttes med to minutter individuell skriving om hva eleven har tenkt og kommet frem til.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://videnogdemokrati.dk/app/uploads/2025/01/DEMX.AI-rapport.final-01a_rapport.pdf" target="_blank" rel="noopener">Holm m.fl. (2025)</a><a href="https://www.medietilsynet.no/globalassets/deepfakes/201106-v4-deepfake-undervisningsopplegg.pdf" target="_blank" rel="noopener">Medietilsynet: deepfake-opplegg</a></p>
+</section>
+
+<section class="sec" id="dialogspill" aria-labelledby="h-dialogspill"><header class="sec-head"><p class="eyebrow">Del 2 · Elevenes stemme</p><h2 id="h-dialogspill">Dialogspillet «Snakk om KI»</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Et brettspill uten fasit. Elevene plasserer en gjenstand etter hvor enige de er i en påstand, begrunner valget og lytter til hverandre. Poenget er å løfte frem ulike syn, ikke å bli enige.</p></div>
+  <p>Skrivesenteret har laget et opplegg tilpasset norsk kontekst og LK20. Det bruker en spilltilnærming som legger til rette for aktiv deltakelse og gode samtaler om KI.</p>
+  <h3>Slik foregår det</h3>
+  <ol>
+    <li>Skriv ut spillbrettet og sett elevene i grupper på omtrent fire.</li>
+    <li>Hver elev har en gjenstand, for eksempel et viskelær eller en nøkkel.</li>
+    <li>Læreren leser opp en påstand. Hver elev plasserer gjenstanden i en av fire ruter etter hvor enig hen er.</li>
+    <li>Når alle har lagt ned, begrunner elevene valget i gruppa og diskuterer.</li>
+    <li>Synspunktene fra gruppene løftes i plenum.</li>
+  </ol>
+  <h3>Forslag til påstander</h3>
+  <div class="cards">
+    <div class="card"><p>KI hjelper oss til en bedre verden.</p></div>
+    <div class="card"><p>KI kan føre til at vi lærer mindre.</p></div>
+    <div class="card"><p>Vi trenger ofte ikke lære det KI allerede kan.</p></div>
+    <div class="card"><p>KI kan av og til erstatte læreren.</p></div>
+    <div class="card"><p>All bruk av KI i skolen er juks.</p></div>
+    <div class="card"><p>All bruk av KI i skolen burde være lov.</p></div>
+    <div class="card"><p>Det er ikke så farlig at KI tar feil, så lenge den har oftere rett enn mennesker.</p></div>
+    <div class="card"><p>KI er en trussel mot menneskeheten.</p></div>
+  </div>
+  <p>Alternativ: elevene rangerer påstandene først hver for seg, drøfter rangeringene i gruppe, og gruppa lander på en felles rangering som presenteres i plenum.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://skrivesenteret.no/ressurs/utforsking-av-kunstig-intelligens-i-klasserommet/" target="_blank" rel="noopener">Skrivesenteret (2024)</a></p>
+</section>
+
+<section class="sec" id="samtalekort" aria-labelledby="h-samtalekort"><header class="sec-head"><p class="eyebrow">Del 2 · Elevenes stemme</p><h2 id="h-samtalekort">Samtalekort og egenevaluering</h2></header>
+  <h3>Samtalekort om KI og kildebevissthet</h3>
+  <p>Tenk.faktisk.no har digitale samtalekort med dilemmaer, påstander og spørsmål om KI og kildekritikk. Du kan velge et par spørsmål til en klassediskusjon, eller elevene kan trekke tilfeldige kort i små grupper. Kortene kan skrives ut eller brukes digitalt.</p>
+  <p>Eksempler på det elevene får:</p>
+  <ul>
+    <li>Hvilken rolle har KI i din hverdag? Gi tre eksempler.</li>
+    <li>Fullfør setningene: «Jeg tror KI vil forbedre …», «Jeg er nysgjerrig på hvordan KI …», «Jeg frykter at KI …»</li>
+    <li>Påstand: I fremtiden blir KI smartere, samtidig som mennesker blir dummere.</li>
+    <li>Påstand: For å sjekke om et bilde er laget av KI, gjør jeg et omvendt bildesøk.</li>
+    <li>Påstand: Vi er vant til å stole på det som er godt formulert.</li>
+  </ul>
+  <p><a href="https://tenk.faktisk.no/samtalekort/kunstig-intelligens-og-kildebevissthet" target="_blank" rel="noopener">Åpne samtalekortene</a> · <a href="https://tenk.faktisk.no/samling/ki" target="_blank" rel="noopener">Se hele undervisningsopplegget</a></p>
+  <h3>Egenevaluering for elever</h3>
+  <p>Organisasjonen AI for Education har laget et skjema som hjelper elever å bli bevisst på hvordan de bruker KI i læringsarbeidet. Målet var et praktisk verktøy med vekt på trygg, etisk og læringsfremmende bruk av generativ KI.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://tenk.faktisk.no/samtalekort/kunstig-intelligens-og-kildebevissthet" target="_blank" rel="noopener">Tenk.faktisk.no</a><a href="https://www.aiforeducation.io/blog/new-student-resource-release" target="_blank" rel="noopener">AI for Education</a></p>
+</section>
+
+<section class="sec" id="m2-oversikt" aria-labelledby="h-m2-oversikt"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-m2-oversikt">Oversikt og fagspesifikke chatboter</h2></header>
+  <p class="lead">Modul 2 viser hvordan KI kan gjøre læringsinnhold tilgjengelig for alle elever: forenkle språk, differensiere oppgaver og dele opp fagstoff, men også støtte lesing, skriving og samtale med fagstoff.</p>
+  <h3>Tre perspektiver</h3>
+  <div class="cards">
+    <div class="card"><span class="tag">1</span><h4>Lærerens tilrettelegging</h4><p>Hvordan du lager tilpasset innhold med KI.</p></div>
+    <div class="card"><span class="tag">2</span><h4>Universell utforming</h4><p>Alt-tekst, teksting og skjermlesere.</p></div>
+    <div class="card"><span class="tag">3</span><h4>Støtte til elevene</h4><p>KI som hjelp for elever som trenger tilrettelegging i læringsarbeidet.</p></div>
+  </div>
+  <figure class="vid" data-yt="fRofGZlioes" data-title="Velkommen til modul 2"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Velkommen til modul 2"><img src="https://i.ytimg.com/vi/fRofGZlioes/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Velkommen til modul 2</span></button></div><figcaption><strong>Velkommen til modul 2</strong><span>Introduksjon til modulen om tilrettelagt undervisning med KI.</span><a href="https://youtu.be/fRofGZlioes" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  <h3>Å «snakke» med en fagtekst</h3>
+  <p>ChatPDF er blitt et begrep for å stille spørsmål til et dokument. Kurset viser en annen vei: en <strong>RAG</strong> (Retrieval-Augmented Generation). Modulens faginnhold er lastet inn i en GPT slik at svarene kombinerer fagstoffet med språkmodellens generelle kunnskap. Chatboten kan forklare begreper, gi eksempler, støtte oppgaveløsning og hjelpe deg å se sammenhenger. Samme teknikk kan elevene dine bruke med fagspesifikke chatboter.</p>
+  <div class="vgrid one">
+    <figure class="vid" data-yt="E0r0qdIuKV4" data-title="Slik bruker du fagspesifikke chatboter"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Slik bruker du fagspesifikke chatboter"><img src="https://i.ytimg.com/vi/E0r0qdIuKV4/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Slik bruker du fagspesifikke chatboter</span></button></div><figcaption><strong>Slik bruker du fagspesifikke chatboter</strong><span>Magnus Nohr viser hvordan du og elevene kan bruke dem i læringsarbeidet. Laget våren 2025.</span><a href="https://youtu.be/E0r0qdIuKV4" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  </div>
+  <h3>Åtte måter å bruke en fagchatbot på</h3>
+  <div class="cards">
+    <div class="card"><h4>Test egen forståelse</h4><p>La boten stille spørsmål, som flervalgsoppgaver.</p></div>
+    <div class="card"><h4>Sparringspartner</h4><p>Diskuter pensum, nyanser og utfordre egen forståelse.</p></div>
+    <div class="card"><h4>Idéer og løsninger</h4><p>Få alternative veier når du står fast.</p></div>
+    <div class="card"><h4>Oppsummer</h4><p>Få oversikt over komplekse tekster raskt.</p></div>
+    <div class="card"><h4>Lav terskel</h4><p>Chatboten dømmer ikke. Still også de «dumme» spørsmålene.</p></div>
+    <div class="card"><h4>Finn svaret sammen</h4><p>Bruk den som læringspartner, ikke som erstatning for Google eller et svar å kopiere.</p></div>
+    <div class="card"><h4>Mentor</h4><p>En personlig assistent som motiverer i studiehverdagen.</p></div>
+    <div class="card"><h4>Begreper på direkten</h4><p>Raske forklaringer, og husk å be om eksempler.</p></div>
+  </div>
+  <h3>Elevboter er noe annet enn ChatGPT</h3>
+  <p>Når elevene bruker KI, bør de bruke spesialiserte boter som Skolebot og CC Tenkemotoren. De har en systemtekst som støtter læringsarbeidet og gir ikke bare svaret, slik ChatGPT ofte gjør. Om skolen har avtale, kan du også lage egne boter. Som student kan du øve deg på Skolebot under «Egne samtaleboter».</p>
+  <p>Modulens egen chatbot finnes i <a href="https://chatgpt.com/g/g-68b6f2116e9c81918d808d11481d4f2e-modul-2-tilrettelagt-undervisning-med-ki" target="_blank" rel="noopener">ChatGPT</a> og i <a href="https://skolebot.no/nb-NO/generate/chatbot/view/ba289578-d550-490f-8c19-f652869ebb15" target="_blank" rel="noopener">Skolebot</a>.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://www.linkedin.com/pulse/hva-er-retrieval-augmented-generation-rag-og-hvorfor-hjelseth-hansen-ws6of/" target="_blank" rel="noopener">Hva er RAG?</a><a href="https://chatgpt.com/g/g-68b6f2116e9c81918d808d11481d4f2e-modul-2-tilrettelagt-undervisning-med-ki" target="_blank" rel="noopener">Modulens chatbot</a><a href="https://skolebot.no/" target="_blank" rel="noopener">Skolebot</a><a href="https://cc.tenkemotoren.no/" target="_blank" rel="noopener">CC Tenkemotoren</a></p>
+</section>
+
+<section class="sec" id="kompenserende" aria-labelledby="h-kompenserende"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-kompenserende">KI som utjevnende teknologi</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Mange frykter at elever bruker KI til å lage innleveringer. Forskning og erfaring viser også at KI løfter dem som har størst behov for støtte, og at den kan utjevne forskjeller.</p></div>
+  <p>For elever med dysleksi og andre lese- og skrivevansker kan språkmodeller, talesyntese og stemmestyrt skriving gjøre det mulig å delta mer likt i faglig arbeid. Det krever at man kan bruke teknologien godt.</p>
+  <h3>Et eksempel fra kursets egen forfatter</h3>
+  <p>Magnus Nohr er dyslektiker og beskriver språkmodeller som revolusjonerende. De gjør ham ikke bedre til å skrive, men hjelper ham å fungere som sine kolleger. Før måtte han be en kollega rette tekstene hans, noe som var både flaut og tidkrevende. I dag tar språkmodeller seg av språkvasken.</p>
+  <div class="vgrid">
+    <figure class="vid" data-yt="eCbe86HxkmA" data-title="KI som kompenserende og utjevnende teknologi"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: KI som kompenserende og utjevnende teknologi"><img src="https://i.ytimg.com/vi/eCbe86HxkmA/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">KI som kompenserende og utjevnende teknologi</span></button></div><figcaption><strong>KI som kompenserende og utjevnende teknologi</strong><span>Hvordan KI kan jevne ut forskjeller i utdanning.</span><a href="https://youtu.be/eCbe86HxkmA" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="BFusp3oJrgA" data-title="Kunstig intelligens – dyslektikerens beste venn"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Kunstig intelligens – dyslektikerens beste venn"><img src="https://i.ytimg.com/vi/BFusp3oJrgA/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Kunstig intelligens – dyslektikerens beste venn</span></button></div><figcaption><strong>Kunstig intelligens – dyslektikerens beste venn</strong><span>Magnus om talesyntese, stemmestyrt skriving og språkmodeller.</span><a href="https://youtu.be/BFusp3oJrgA" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  </div>
+  <p>Episoden finnes også som lydpodkast.</p>
+  <h3>Hva forskningen viser</h3>
+  <p>Harvard og Wharton lot 750 konsulenter løse arbeidsoppgaver i fem timer, før og etter at de fikk hjelp av GPT-4. Kvaliteten økte med 40 prosent, og de ble 25 prosent raskere. Gevinsten var størst for dem som startet svakest.</p>
+  <ul class="bars" aria-label="Forbedring med KI-hjelp i tre studier">
+    <li><span class="lab">Svakeste halvdel<small>Harvard/Wharton · kvalitet</small></span><span class="track"><i class="fill" style="--w:86%"></i></span><span class="val">+43 %</span></li>
+    <li><span class="lab">Alle konsulentene<small>Harvard/Wharton · kvalitet</small></span><span class="track"><i class="fill" style="--w:80%"></i></span><span class="val">+40 %</span></li>
+    <li><span class="lab">Nybegynnere og lav ytelse<small>Stanford · produktivitet</small></span><span class="track"><i class="fill" style="--w:70%"></i></span><span class="val">+35 %</span></li>
+    <li><span class="lab">Flinkeste halvdel<small>Harvard/Wharton · kvalitet</small></span><span class="track"><i class="fill" style="--w:34%"></i></span><span class="val">+17 %</span></li>
+  </ul>
+  <p>Utjevningen er sett i flere studier. Forskere ved MIT målte økt produktivitet for 444 høyskoleutdannede på skriveoppgaver, der forskjellene mellom dem ble mindre. Ved Stanford fikk over 5000 kundebehandlere hjelp fra en GPT-modell. De beste merket lite, mens nybegynnere og de med lav ytelse økte produktiviteten med 35 prosent.</p>
+  <p>I lesing finnes tilsvarende funn. Studien <em>Let AI Read First</em> (2025) med 150 dyslektikere viste tydelig bedre leseforståelse og flyt når store språkmodeller annoterte og forenklet tekst. I Osloskolen ble et spill brukt til å forutsi lesevansker, og algoritmen pekte ut omtrent tre av fire elever som fikk dem.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4573321" target="_blank" rel="noopener">Dell&#x27;Acqua m.fl. (2023)</a><a href="https://www.aftenposten.no/kultur/i/wAzroA/taperne-kan-bli-vinnerne-av-ki-revolusjonen" target="_blank" rel="noopener">Aftenposten (2023)</a><a href="https://open.spotify.com/episode/2gARDZ3sefBDhoESCj7JvM" target="_blank" rel="noopener">Podcast: Dyslektikerens beste venn</a><a href="https://arxiv.org/pdf/2504.00941" target="_blank" rel="noopener">Let AI Read First (2025)</a><a href="https://www.utdanningsnytt.no/ai-chatgpt-dysleksi/med-dette-spillet-fant-forskerne-tre-av-fire-elever-med-lesevansker/380897" target="_blank" rel="noopener">Utdanningsnytt: lesespill i Osloskolen</a></p>
+</section>
+
+<section class="sec" id="forenkle" aria-labelledby="h-forenkle"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-forenkle">Forenkle og differensiere tekster</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>KI kan lage versjoner av samme fagtekst på flere nivåer. Du må selv kvalitetssikre at innholdet fortsatt er faglig riktig og passer elevgruppen.</p></div>
+  <h3>Forenkle språket</h3>
+  <p>Mange fagtekster har avanserte begreper, lange setninger og tungt fagspråk. Lim teksten inn i en chatbot og be om en versjon med kortere setninger, enklere ord og tydeligere struktur. Du kan også be om tilpasning for elever med norsk som andrespråk eller lesevansker.</p>
+  <ul>
+    <li><strong>Oppgi alder.</strong> Da treffer nivået ofte bedre. De fleste chatboter bygger på amerikansk GPT og kan bomme på nivået i norsk skole.</li>
+    <li><strong>Legg gjerne alderen litt lavere.</strong> Av og til blir tekstene ellers for avanserte.</li>
+    <li><strong>Foto av tekst</strong> går an, men sjekk først at det er lov å dele teksten fra boken.</li>
+  </ul>
+  <p>Eksempel: En lærebokstekst om demokrati er tung og teoretisk. Med KI får du en versjon som forklarer begrepene eksplisitt og bruker et mer muntlig språk, med samme hovedinnhold.</p>
+  <figure class="vid" data-yt="Rvr2VhXuON4" data-title="Forenkle en tekst til elevens nivå"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Forenkle en tekst til elevens nivå"><img src="https://i.ytimg.com/vi/Rvr2VhXuON4/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Forenkle en tekst til elevens nivå</span></button></div><figcaption><strong>Forenkle en tekst til elevens nivå</strong><span>Elever finner ofte nettekster over sitt nivå. Her «oversettes» teksten til enklere kunnskapsnivå.</span><a href="https://youtu.be/Rvr2VhXuON4" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  <h3>Differensier i flere nivåer</h3>
+  <p>Differensiering går et steg lenger: flere versjoner av samme tekst for ulike kompetansenivå. Kjernen i innholdet skal være den samme, men de avanserte versjonene får mer faglig dybde. Kurset lot chatboten selv lage en universell ledetekst:</p>
+  <div class="prompt"><header><span>Ledetekst for differensiering</span><button type="button" data-copy="p-diff">Kopier</button></header>
+<pre id="p-diff">Du skal hjelpe meg med å differensiere og tilrettelegge en gitt tekst for ulike elevgrupper basert på kunnskapsnivå. Del teksten i tre versjoner:
+- Grunnleggende nivå: enkle setninger, grunnleggende begrepsforklaringer, tydelige eksempler.
+- Middels nivå: variert språk, mer avanserte begreper forklart i kontekst, tydelige eksempler.
+- Avansert nivå: faglig presist språk, dyptgående forklaringer, utfordrende begreper og eksempler.
+
+Når du tilrettelegger teksten skal du:
+- identifisere nøkkelbegreper som kan være utfordrende
+- forenkle og forklare dem på grunnleggende og middels nivå
+- gi mer komplekse forklaringer på avansert nivå
+- sørge for at kjernen i innholdet er den samme på alle nivåer
+
+Her er teksten:</pre></div>
+  <p>Merk at de avanserte versjonene får mer innhold selv om ledeteksten ber om samme kjerne. Vurder alltid om differensieringen er slik du ønsker.</p>
+  <figure class="vid" data-yt="MZKDrT6jkV8" data-title="Differensiere tekster med ChatGPT"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Differensiere tekster med ChatGPT"><img src="https://i.ytimg.com/vi/MZKDrT6jkV8/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Differensiere tekster med ChatGPT</span></button></div><figcaption><strong>Differensiere tekster med ChatGPT</strong><span>Magnus viser prosessen. Det samme fungerer i Copilot, Gemini og andre chatboter.</span><a href="https://youtu.be/MZKDrT6jkV8" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+</section>
+
+<section class="sec" id="nevro" aria-labelledby="h-nevro"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-nevro">Struktur for elever med ADHD</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Elever som strever med oppstart og oversikt trenger små, tydelige biter. En chatbot kan dele opp oppgaven, minne om neste steg og forenkle instruksjoner, men den erstatter ikke lærerens veiledning.</p></div>
+  <p>Nevrodivergente elever, for eksempel med ADHD, kan ha utfordringer med konsentrasjon, oppmerksomhet, motivasjon og organisering. Kurset peker på at de ofte har kortere arbeidsminne, noe elever med dysleksi også kan ha. Lange eller mange instruksjoner og komplekse oppgaver gir lett stress og lavere mestringsfølelse. Mange strever med å:</p>
+  <ul>
+    <li>sette i gang med oppgaver</li>
+    <li>holde oversikt over hva som skal gjøres først</li>
+    <li>huske og følge en arbeidsplan</li>
+    <li>unngå utsettelse</li>
+    <li>fullføre oppgaver i flere trinn</li>
+  </ul>
+  <h3>Hvordan en chatbot kan hjelpe</h3>
+  <div class="cards">
+    <div class="card"><h4>Del opp oppgaven</h4><p>Bryt en stor oppgave i konkrete deloppgaver, anslå tid, prioriter og lag en plan. Eksempel: «Kan du dele denne skriveoppgaven i mindre oppgaver til meg?»</p></div>
+    <div class="card"><h4>Struktur underveis</h4><p>Påminnelser om neste steg, forslag til hvordan komme i gang, og spørsmål som holder fokus: «Hva har du lyst til å begynne med?»</p></div>
+    <div class="card"><h4>Forenkling</h4><p>Forenkle tekster, forklare begreper og skrive om instruksjoner til noe som er lettere å forstå.</p></div>
+  </div>
+  <p>En chatbot er alltid tilgjengelig, også når læreren er opptatt. Det kan gi mer selvstendighet og mindre frustrasjon. Eleven trenger likevel opplæring, og samtalene bør inngå i en bevisst pedagogisk plan. Både elever og lærere må forholde seg kritisk til svarene.</p>
+  <h3>Apper du bør kjenne til</h3>
+  <p>Skolen har ikke databehandleravtale med disse, men du kan kjenne til dem og eventuelt anbefale dem til foreldre som spør.</p>
+  <div class="cards">
+    <div class="card"><h4>Neurolist</h4><p>Laget for nevrodivergente. Bruker KI til å lage trinnvise sjekklister med tidsestimater. Lastes ned på mobil eller nettbrett.</p></div>
+    <div class="card"><h4>Goblin.tools</h4><p>Nettside uten innlogging. Du limer inn en oppgave og får en detaljert gjøremålsliste.</p></div>
+    <div class="card"><h4>Jotit ADHD</h4><p>For klasserom. Fokusmodus uten distraksjoner og støtte for ulike læringsstiler.</p></div>
+    <div class="card"><h4>Duolingo</h4><p>Ikke laget for ADHD, men har korte økter på 5 til 10 minutter, poeng og streaks, og justerer nivået etter brukeren.</p></div>
+  </div>
+  <p class="srcnote"><span>Kilder</span><a href="https://sml.snl.no/nevrodivergent" target="_blank" rel="noopener">Nevrodivergent (SNL)</a><a href="https://neurolist.app/" target="_blank" rel="noopener">Neurolist</a><a href="https://goblin.tools/" target="_blank" rel="noopener">Goblin.tools</a><a href="https://www.jotit.io/learning-solutions/adhd-students" target="_blank" rel="noopener">Jotit ADHD</a><a href="https://www.duolingo.com/" target="_blank" rel="noopener">Duolingo</a></p>
+</section>
+
+<section class="sec" id="uu" aria-labelledby="h-uu"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-uu">Universell utforming</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Gode løsninger for noen er ofte gode for alle. KI kan gi deg alt-tekst, teksting og enklere tekster raskt, men du må selv kvalitetssikre.</p></div>
+  <p>Universell utforming i et digitalt læringsmiljø betyr at ressurser og undervisningsopplegg kan brukes av alle elever, uavhengig av funksjonsevne, språkferdigheter og læreforutsetninger, uten tilpasning i etterkant. En elev med dysleksi, en flerspråklig elev og en elev med konsentrasjonsvansker har alle nytte av tydelig struktur, visuelt støttemateriell og lett tilgjengelige forklaringer. Innholdet bør finnes i flere formater, med tekst-til-tale og klart språk og design.</p>
+  <h3>Skjermlesere og alternativ tekst</h3>
+  <p>Elever med nedsatt syn bruker skjermlesere som JAWS og NVDA for Windows eller VoiceOver for macOS, noen koblet til en leselist med punktskrift. Når skjermleseren møter et bilde uten alternativ tekst, leser den opp filnavnet bokstav for bokstav, noe som er svært irriterende. Alt-tekst vises også hvis bildet ikke lastes, og hjelper søkemotorer.</p>
+  <h4>Hva loven krever for IKT</h4>
+  <ul>
+    <li>Alt ikke-tekstlig innhold skal ha tekstalternativ.</li>
+    <li>Meningsbærende bilder får et kort tekstalternativ som gir samme informasjon.</li>
+    <li>Komplekse bilder får både et kort og et utfyllende tekstalternativ.</li>
+    <li>Pynt kodes slik at det ikke skaper støy.</li>
+  </ul>
+  <h3>Slik skriver du god alt-tekst</h3>
+  <div class="cards">
+    <div class="card"><h4>Ikke skriv «bilde av»</h4><p>Skjermleseren sier allerede «bilde». Du kan nevne typen, for eksempel «Et brudepar. Tegnet i enkel stil.»</p></div>
+    <div class="card"><h4>Store bokstaver og punktum</h4><p>Det gjør opplesingen mye bedre.</p></div>
+    <div class="card"><h4>Hold den kort</h4><p>Helst under 100 tegn.</p></div>
+    <div class="card"><h4>Beskriv det essensielle</h4><p>Hva går eleven glipp av uten bildet? Du kan gjerne gi en vurdering, for eksempel om paret ser lykkelig ut.</p></div>
+    <div class="card"><h4>Ikke gjenta sidens tekst</h4><p>Unngå det som allerede står rundt bildet.</p></div>
+    <div class="card"><h4>Tenk telefon</h4><p>Hva ville du sagt hvis du forklarte bildet over telefonen?</p></div>
+  </div>
+  <p>Unntak: Rene pynteelementer skal ikke leses opp, så marker dem som dekorative. Hvis siden har mange like bilder, kan gjentatt opplesing bli slitsom, og noen av dem bør også merkes som dekor.</p>
+  <figure class="vid" data-yt="3sq3aVVBfck" data-title="Alternativ tekst på bilder"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Alternativ tekst på bilder"><img src="https://i.ytimg.com/vi/3sq3aVVBfck/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Alternativ tekst på bilder</span></button></div><figcaption><strong>Alternativ tekst på bilder</strong><span>Slik legger du inn alt-tekst i Word og Google Dokumenter.</span><a href="https://youtu.be/3sq3aVVBfck" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  <h3>Tilgjengelighetskontroll i Microsoft 365</h3>
+  <p>Word, PowerPoint og Excel har en tilgjengelighetskontroll som finner manglende alt-tekst, utydelige lenker, dårlig kontrast og overskrifter i feil rekkefølge, og foreslår rettelser. KI kan i tillegg foreslå alt-tekst automatisk. Dobbeltklikk på bildet og velg å la KI generere alternativ tekst. Eksempel på forslag: «Elever som sitter og jobber i grupper i klasserommet.» Vurder alltid forslaget og tilpass det til det faglige poenget.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://www.cantec.no/syn-gruppert/programvare-1/programvare/jaws" target="_blank" rel="noopener">JAWS</a><a href="https://www.statped.no/ressurser-og-verktoy/ressurser/ikt-for-punktskriftbrukere/skjermleserprogrammer/nvda-for-windows/" target="_blank" rel="noopener">NVDA</a><a href="https://www.blindeforbundet.no/hjelpemidler-og-produkter/punktskrift-blindeskrift" target="_blank" rel="noopener">Blindeforbundet: punktskrift</a></p>
+</section>
+
+<section class="sec" id="transkribering" aria-labelledby="h-transkribering"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-transkribering">Teksting og transkribering</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>KI gjør det raskt å tekste video og omforme tale til tekst. Du kan bruke det i undervisning, vurdering og møter, men bare med verktøy skolen har databehandleravtale for, og aldri med røde eller svarte data.</p></div>
+  <h3>Teksting av video</h3>
+  <p>Videoer i elevenes læringsplattform skal være tekstet. Lovkravet kalles «teksting for hørselshemmede», men alle elever får nytte av det. Det var tidligere ressurskrevende. Nå gjør KI jobben. YouTube tekster videoer automatisk, og eleven kan velge et annet språk, så fremmedspråklige elever kan se norske videoer tekstet på morsmålet.</p>
+  <p>Studenter har tilgang til tjenesten <strong>Autotekst fra UiO</strong>, som mange universiteter, kommuner og fylkeskommuner også har. Uten tilgang kan du bruke en tilsvarende gratis tjeneste fra Nasjonalbiblioteket (NB Whisper). Du kan også tekste automatisk i Clipchamp.</p>
+  <div class="vgrid">
+    <figure class="vid" data-yt="uPfpj-tFlgk" data-title="Autotekst fra UiO"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Autotekst fra UiO"><img src="https://i.ytimg.com/vi/uPfpj-tFlgk/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Autotekst fra UiO</span></button></div><figcaption><strong>Autotekst fra UiO</strong><span>Magnus viser transkribering av video og lyd, og hvordan du merker hva hver person sier.</span><a href="https://youtu.be/uPfpj-tFlgk" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="cwZ_zUm4Lnc" data-title="Videoinnspilling og automatisk teksting i Clipchamp"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Videoinnspilling og automatisk teksting i Clipchamp"><img src="https://i.ytimg.com/vi/cwZ_zUm4Lnc/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Videoinnspilling og automatisk teksting i Clipchamp</span></button></div><figcaption><strong>Videoinnspilling og automatisk teksting i Clipchamp</strong><span>Opplæring i Clipchamp (tidligere Microsoft Stream).</span><a href="https://youtu.be/cwZ_zUm4Lnc" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="H7sLHlMrlGo" data-title="Mer om automatisk teksting"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Mer om automatisk teksting"><img src="https://i.ytimg.com/vi/H7sLHlMrlGo/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Mer om automatisk teksting</span></button></div><figcaption><strong>Mer om automatisk teksting</strong><span>Tilleggsvideo fra kursets teksting-del.</span><a href="https://youtu.be/H7sLHlMrlGo" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="U7s-rWGEj9Q" data-title="Videoinnspilling og teksting i Panopto"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Videoinnspilling og teksting i Panopto"><img src="https://i.ytimg.com/vi/U7s-rWGEj9Q/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Videoinnspilling og teksting i Panopto</span></button></div><figcaption><strong>Videoinnspilling og teksting i Panopto</strong><span>Panopto er et annet videoverktøy. Vær presis med delingsrettighetene.</span><a href="https://youtu.be/U7s-rWGEj9Q" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  </div>
+  <h3>Transkribering</h3>
+  <p>Transkribering er å overføre det som sies i en lydfil til skrift. Elever kan transkribere et intervju i samfunnsfag, en logg i naturfag eller en podkast i norsk. Læreren kan dokumentere muntlige vurderingssamtaler og elevrefleksjoner. Tekst er lettere å dele, søke i og bearbeide, og lettere for elever med hørselsutfordringer eller konsentrasjonsvansker enn å høre opptaket flere ganger.</p>
+  <p>Når lyden er blitt tekst, kan KI oppsummere den. En enkel ledetekst som «Oppsummer denne teksten» eller «Hva er hovedpoengene i dette intervjuet?» gir en kort og strukturert oversikt.</p>
+  <div class="vgrid">
+    <figure class="vid" data-yt="cMRFF33mIcs" data-title="Transkribere lydfiler"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Transkribere lydfiler"><img src="https://i.ytimg.com/vi/cMRFF33mIcs/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Transkribere lydfiler</span></button></div><figcaption><strong>Transkribere lydfiler</strong><span>Magnus viser transkribering i webversjonen av Word.</span><a href="https://youtu.be/cMRFF33mIcs" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="D3HmoiB2D88" data-title="Møtereferat med KI"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Møtereferat med KI"><img src="https://i.ytimg.com/vi/D3HmoiB2D88/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Møtereferat med KI</span></button></div><figcaption><strong>Møtereferat med KI</strong><span>Slik lager du møtereferat og oppsummeringer fra en transkribering.</span><a href="https://youtu.be/D3HmoiB2D88" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  </div>
+  <h3>Møtereferat</h3>
+  <p>Tar du opptak av et møte, for eksempel i Teams, kan du transkribere det og be KI lage et referat: «Oppsummer dette møtet som et referat» eller «Lag en punktvis oversikt over hovedtemaene». Referatet kan vise deltakere, temaer, forslag og beslutninger. Det sparer tid og gir bedre dokumentasjon, særlig i samarbeid med PPT, barnevern og helsetjenester.</p>
+  <h3>Personvern: fire datanivåer</h3>
+  <p>Du kan bare bruke KI-verktøy som arbeidsgiveren har gyldig databehandleravtale for, og vanligvis bare på de to laveste nivåene. De fleste kommuner har avtale med Microsoft for Microsoft 365, men ikke for rødt og svart nivå. Er du i tvil, spør IKT-ansvarlig eller personvernombudet.</p>
+  <div class="levels">
+    <div class="lvl"><i style="background:var(--green)"></i><div><b>Grønt</b><p>Ikke sensitivt og kan deles offentlig: generelle faglige samtaler, lærestoff, åpne kilder.</p><em style="color:var(--green)">Kan brukes</em></div></div>
+    <div class="lvl"><i style="background:var(--amber)"></i><div><b>Gult</b><p>Interne, men ikke sensitive opplysninger: faglige diskusjoner og idéutveksling som ikke kan knyttes til enkeltpersoner.</p><em style="color:var(--amber)">Kan brukes</em></div></div>
+    <div class="lvl"><i style="background:var(--red)"></i><div><b>Rødt</b><p>Personopplysninger som kan knyttes til identifiserbare personer: elevnavn, vurderinger, fravær, innhold fra elevsamtaler.</p><em style="color:var(--red)">Ikke med KI-verktøy</em></div></div>
+    <div class="lvl"><i style="background:var(--black)"></i><div><b>Svart</b><p>Særlige kategorier: helseopplysninger, spesialundervisning, individuell tilrettelegging, bekymring for omsorgssituasjonen.</p><em style="color:var(--ink)">Ikke med KI-verktøy</em></div></div>
+  </div>
+  <p class="srcnote"><span>Kilder</span><a href="https://autotekst.uio.no/nb" target="_blank" rel="noopener">Autotekst fra UiO</a><a href="https://ai.nb.no/nb-whisper-demo/" target="_blank" rel="noopener">NB Whisper (Nasjonalbiblioteket)</a></p>
+</section>
+
+<section class="sec" id="partner" aria-labelledby="h-partner"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-partner">Chatbot som læringspartner</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>En chatbot kan fungere som en tilgjengelig veileder når læreren og medelevene ikke er der. Den støtter, men erstatter ikke lærerens faglige og relasjonelle rolle.</p></div>
+  <p>Læreren kjenner eleven og faget, og mye læring skjer i samspill med medelever. Men læreren er ikke alltid tilgjengelig, for eksempel på ettermiddagen og i helgene, og ikke alle elever har foreldre som kan hjelpe med faglige spørsmål. Da kan KI være en personlig veileder eller læringsvenn.</p>
+  <h3>Hva eleven får</h3>
+  <div class="cards">
+    <div class="card"><h4>Umiddelbar tilbakemelding</h4><p>På tekst, regnestykke eller kilde, når behovet oppstår, i stedet for å vente.</p></div>
+    <div class="card"><h4>Støtte på eget nivå</h4><p>Vanskelige begreper forklart enklere, oppsummeringer, forslag til struktur: tilpasset opplæring i sanntid.</p></div>
+    <div class="card"><h4>Trygg samtalepartner</h4><p>Lavere terskel for å spørre, også for dem som ikke rekker opp hånden i klassen.</p></div>
+    <div class="card"><h4>Utforsking og kreativitet</h4><p>Drøfte idéer, prøve formuleringer og vurdere perspektiver.</p></div>
+  </div>
+  <p>Chatboten blir aldri sliten, kan forklare det samme flere ganger og gi nye eksempler. Det er nyttig for elever som trenger repetisjon eller språklig støtte, men det krever at elevene har <a href="#ledetekst">ledetekstkompetanse</a>.</p>
+  <h3>Begrensninger</h3>
+  <p>Chatboten forstår ikke konteksten som en lærer, kjenner ikke elevens historie eller følelser, og kan gi uriktige svar. Den kan ikke erstatte det faglige og menneskelige samspillet. Selv en bot som er spesialtrent på ett lærestoff gir svar basert på mønstre i teksten, og kan være forenklet eller feil. Bruk den som støtte, ikke som eneste kilde. Den beste læringen skjer når menneskelige relasjoner og teknologi spiller på lag.</p>
+  <h3>Slik er en veileder-ledetekst bygget</h3>
+  <p>Kurset har laget en ledetekst som gjør chatboten til en veileder. Den følger denne logikken:</p>
+  <ol>
+    <li>Boten presenterer seg som KI-veileder og stiller <strong>ett spørsmål om gangen</strong>.</li>
+    <li>Den spør om tema, læringsnivå og hva eleven allerede vet.</li>
+    <li>Den forklarer med eksempler og analogier tilpasset nivået.</li>
+    <li>Den gir <strong>ikke</strong> løsningen med en gang, men stiller ledende spørsmål så eleven selv genererer svaret.</li>
+    <li>Når eleven forstår, ber den eleven forklare konseptet med egne ord.</li>
+  </ol>
+  <p>Du kan teste den ferdige <a href="https://chatgpt.com/g/g-67ea935ae00481919c1cfda7a08460d0-ki-veileder-laerer" target="_blank" rel="noopener">KI-veilederen i ChatGPT</a>.</p>
+  <p class="srcnote"><span>Kilder</span><a href="https://chatgpt.com/g/g-67ea935ae00481919c1cfda7a08460d0-ki-veileder-laerer" target="_blank" rel="noopener">KI-veileder (GPT)</a></p>
+</section>
+
+<section class="sec" id="skriveprosess" aria-labelledby="h-skriveprosess"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-skriveprosess">Skriving med KI som støtte</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>KI kan hjelpe elever som strever med å komme i gang, formulere seg eller få det de vil ned på papir. Lærerens oppgave er å sørge for at det gir læring og ikke bare ferdig tekst.</p></div>
+  <h3>Diktering: tale til tekst</h3>
+  <p>Eleven snakker, og teknologien skriver. Det har vært mulig lenge, men mange lærere og elever har ikke oppdaget det. Funksjonen finnes i mobiler, Word, Google Dokumenter og de store chatbotene. Den er særlig nyttig for elever med dysleksi, språkvansker eller motoriske utfordringer, fordi fokus flyttes fra rettskriving til innhold og refleksjon. Mange elever opplever at tankene går fortere enn hendene. Diktering gir flyt, og teksten kan bearbeides etterpå.</p>
+  <p>Øv eleven i å snakke tydelig, si punktum med stemmen og planlegge før de dikterer. God mikrofon og et stille rom hjelper. Udir har godkjent diktering på eksamen for kandidater med behov for særskilt tilrettelegging.</p>
+  <p><strong>Windows:</strong> trykk <kbd>Win</kbd> + <kbd>H</kbd> for innebygd diktering i Word, OneNote, Teams og nettleseren. Du kan styre tegnsetting med stemmen, for eksempel «punktum» og «ny linje». Det er gratis og krever ingen installasjon.</p>
+  <div class="vgrid">
+    <figure class="vid" data-yt="iAEP3cEmOwI" data-title="Diktering: tale-til-tekst"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Diktering: tale-til-tekst"><img src="https://i.ytimg.com/vi/iAEP3cEmOwI/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Diktering: tale-til-tekst</span></button></div><figcaption><strong>Diktering: tale-til-tekst</strong><span>Hva diktering er og hvordan det støtter tilrettelagt undervisning.</span><a href="https://youtu.be/iAEP3cEmOwI" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="Y9_wOh0XoOg" data-title="Diktering i Windows"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Diktering i Windows"><img src="https://i.ytimg.com/vi/Y9_wOh0XoOg/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Diktering i Windows</span></button></div><figcaption><strong>Diktering i Windows</strong><span>Slik bruker du Win + H.</span><a href="https://youtu.be/Y9_wOh0XoOg" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  </div>
+  <h3>Teksthjelp: komme i gang og avslutte</h3>
+  <p>Mange stopper opp i starten og i slutten. KI kan foreslå setningsstartere, innledninger, skriverammer og avslutninger. Ved en tekst om vennskap kan boten for eksempel foreslå å starte med en opplevelse, et spørsmål eller en refleksjon. Underveis kan den foreslå overganger mellom avsnitt og peke på det som mangler. Til slutt kan den foreslå en oppsummering av hovedpoengene eller en kobling tilbake til innledningen, slik at eleven ser hva en god avslutning er.</p>
+  <p>Elevene må selv ta valgene og eie teksten. Lag derfor retningslinjer, generelt og for hver oppgave, som sier hva som er akseptabel og uakseptabel bruk av KI.</p>
+  <h3>Språkvask</h3>
+  <p>Språkvask betyr å forbedre teksten språklig uten å endre det faglige innholdet. En ungdomsskoleelev med gode poenger om klimaendringer, men uryddig språk, får en ny versjon med tydeligere språk. Det kan være motiverende og lærerikt.</p>
+  <p>Magnus skiller likevel mellom to formål. For ham er språkvask en kompenserende hjelp som gjør at han fungerer som andre, men han lærer ikke rettskriving av den. Han tror ikke at svake elever på eget initiativ sammenligner egen tekst med KI-versjonen og lærer av forskjellen. Læring krever at <mark>læreren veileder og legger til rette</mark>.</p>
+  <div class="vgrid">
+    <figure class="vid" data-yt="N-yl3R9pb0M" data-title="Språkvask med ledeteksten «Gjør denne teksten bedre»"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Språkvask med ledeteksten «Gjør denne teksten bedre»"><img src="https://i.ytimg.com/vi/N-yl3R9pb0M/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Språkvask med ledeteksten «Gjør denne teksten bedre»</span></button></div><figcaption><strong>Språkvask med ledeteksten «Gjør denne teksten bedre»</strong><span>Magnus viser språkvask i praksis.</span><a href="https://youtu.be/N-yl3R9pb0M" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="ZFoBxp30X7U" data-title="Finn skrivefeil og vis hvor de står"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Finn skrivefeil og vis hvor de står"><img src="https://i.ytimg.com/vi/ZFoBxp30X7U/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Finn skrivefeil og vis hvor de står</span></button></div><figcaption><strong>Finn skrivefeil og vis hvor de står</strong><span>Tre ledetekster som lister opp feil i stedet for å rette dem.</span><a href="https://youtu.be/ZFoBxp30X7U" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  </div>
+  <p>Chatbotene fungerer ulikt. ChatGPT kan endre alt uten å si fra. CC Tenkemotoren har et tekstverksted. Skolebot viser original tekst, ny tekst og en liste over endringer med begrunnelse. NDLAs praterobot er for eldre elever og kan promptes. Denne ledeteksten gir en lærerik prosess:</p>
+  <div class="prompt"><header><span>Språkvask som læring</span><button type="button" data-copy="p-sprak">Kopier</button></header>
+<pre id="p-sprak">Hei! Jeg har skrevet en tekst som jeg gjerne vil forbedre. Kan du hjelpe meg med å finne feil i rettskriving, grammatikk og tegnsetting?
+
+Istedenfor å rette alt for meg, vil jeg at du:
+- lister opp feilene jeg har gjort, med en forklaring jeg forstår
+- forteller hvor i teksten feilen er (gjerne med sitat eller linje)
+- sier hva som er riktig og forklarer hvorfor
+- IKKE skriver om teksten for meg, for jeg vil lære å rette den selv
+
+Her er teksten min:
+[Lim inn teksten her]</pre></div>
+  <p>For yngre elever eller elever med lese- og skrivevansker kan du bruke en kortere versjon: «Kan du sjekke teksten min? Ikke rett for meg, men fortell hva jeg har gjort feil, vis eksempler fra teksten min, og forklar hva som er riktig og hvorfor.» Et tips: Jobb med én oppgave om gangen. Språkmodellene har begrenset «plass» (tokens), og får både mennesker og teknologi for mye på en gang, forsvinner noe.</p>
+  <h3>Prosessorientert skriving og KI-tilbakemelding</h3>
+  <p>Prosessorientert skriving går i faser: idémyldring, planlegging, skriving, revisjon og ferdigstilling. KI er særlig nyttig i revisjonen. Eleven kan få tilbakemelding på struktur, argumentasjon og språk, delt i kategorier som grammatikk, innhold, oppbygging og sammenheng. Poenget er at eleven selv vurderer tilbakemeldingen og bruker den aktivt.</p>
+  <p>Eksempel: En elev har skrevet en drøftende tekst i samfunnsfag. KI sier at konklusjonen er svak og at innledning og avslutning mangler kobling. I stedet for å få en ferdig konklusjon får eleven forslag til hvordan argumentasjonen kan styrkes. Læreren blir veileder og bygger det som kalles <em>feedback literacy</em>: evnen til å forstå, vurdere og handle på tilbakemelding. Du kan lage en egen bot til dette i Skolebot.</p>
+  <figure class="vid" data-yt="ZhuRQHc3UPE" data-title="Podkast: KI for å støtte skriveprosesser"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Podkast: KI for å støtte skriveprosesser"><img src="https://i.ytimg.com/vi/ZhuRQHc3UPE/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Podkast: KI for å støtte skriveprosesser</span></button></div><figcaption><strong>Podkast: KI for å støtte skriveprosesser</strong><span>Samtale med professor Irina Engeness, som leder prosjektet AI4AfL. Frivillig.</span><a href="https://youtu.be/ZhuRQHc3UPE" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  <p class="srcnote"><span>Kilder</span><em>Engeness (2025)</em><em>Hertzberg &amp; Dysthe (2012)</em><a href="https://www.udir.no/eksamen-og-prover/eksamen/administrere-eksamen/" target="_blank" rel="noopener">Udir: særskilt tilrettelegging</a><a href="https://skolebot.no/" target="_blank" rel="noopener">Skolebot</a><a href="https://cc.tenkemotoren.no/" target="_blank" rel="noopener">CC Tenkemotoren</a><a href="https://ndla.no/minndla" target="_blank" rel="noopener">Praterobot NDLA</a></p>
+</section>
+
+<section class="sec" id="talesyntese" aria-labelledby="h-talesyntese"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-talesyntese">Å lese med ørene</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Opplesing med kunstig stemme gir elever tilgang til fagstoff uten at avkoding blir hinderet. Det er et supplement og et inkluderende tiltak, ikke spesialbehandling.</p></div>
+  <p>Elever med dysleksi, konsentrasjonsutfordringer eller norsk som andrespråk kan få teksten lest høyt. Svensson, professor i psykologi, fant at dyslektiske elever som <em>hører</em> leseleksa holder samme nivå som de som leser den tradisjonelt, så å lese med ørene er et fullverdig alternativ. Det er også noe vi alltid har sagt om små barn: les for dem, så utvikler de ordforråd.</p>
+  <h3>For elever med norsk som andrespråk</h3>
+  <p>De hører korrekt uttale, intonasjon og rytme samtidig som de ser ordene. Den doble støtten gjør det lettere å knytte lyd til skrift og utvide ordforrådet. Elever som leser sakte mister ofte tråden, og opplesing gir dem helhet i faginnholdet.</p>
+  <h3>Et eksempel: Sindre (14)</h3>
+  <p>Sindre har dysleksi og synsutfordringer. Høsten 2022 fikk han, etter flere års kamp, bruke hjelpemidler og delta på nasjonale prøver i lesing på lik linje med andre. Et kamera på brillene gjør tekst til lyd. Han greide prøven selv og uten ekstra tid. Elever med lesevansker har ikke lærevansker. I fag som samfunnsfag, KRLE og naturfag, der målet er forståelse, kan lesing med ørene være nøkkelen.</p>
+  <figure class="vid" data-yt="4KX3Bbg9B7U" data-title="Å lese med ørene"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Å lese med ørene"><img src="https://i.ytimg.com/vi/4KX3Bbg9B7U/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Å lese med ørene</span></button></div><figcaption><strong>Å lese med ørene</strong><span>Talesyntese som støtte for lesevansker og norsk som andrespråk.</span><a href="https://youtu.be/4KX3Bbg9B7U" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  <h3>Verktøy for høytlesing</h3>
+  <div class="cards">
+    <div class="card"><h4>iPad</h4><p>Innstillinger › Tilgjengelighet › Opplest innhold. Velg hele skjermen eller utvalgt tekst, juster hastighet og uthev ordene mens de leses.</p></div>
+    <div class="card"><h4>Engasjerende leser</h4><p>Gratis fra Microsoft i Word, OneNote, Outlook, Edge, Teams og Forms. Tekst-til-tale, tekststørrelse og avstand, fargekoding og oversettelse.</p></div>
+    <div class="card"><h4>Nettlesere</h4><p>Høyreklikk i teksten. Edge har Engasjerende leser. I Chrome kan du installere Speechify.</p></div>
+    <div class="card"><h4>Microsoft Lens</h4><p>Bruker Engasjerende leser, men må ligge på en iPad eller mobil.</p></div>
+    <div class="card"><h4>NotebookLM</h4><p>Leser ikke opp hele teksten, men lager en podkast av innholdet, også på elevens første språk.</p></div>
+  </div>
+  <p class="srcnote"><span>Kilder</span><a href="https://play.lnu.se/media/t/0_tx7xjfx4" target="_blank" rel="noopener">Intervju med Idor Svensson</a><a href="https://www.utdanningsnytt.no/dysleksi-leseproblemer-nasjonale-prover/sindre-14-leser-na-med-orene-og-far-endelig-ta-nasjonale-prover/334826" target="_blank" rel="noopener">Utdanningsnytt: Sindre (14)</a><a href="https://support.apple.com/no-no/guide/ipad/ipad9a247097/ipados" target="_blank" rel="noopener">Apple: Les opp innhold</a><a href="https://speechify.com/pricing/" target="_blank" rel="noopener">Speechify</a><a href="https://notebooklm.google.com/" target="_blank" rel="noopener">NotebookLM</a></p>
+</section>
+
+<section class="sec" id="leseverktoy" aria-labelledby="h-leseverktoy"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-leseverktoy">KI i leseopplæringen</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Tre Microsoft-verktøy gir elever tilbakemelding på høytlesing: Leseveileder, Reading Coach og Lesefremdrift. Kurset kaller dem «de tre bukkene Bruse».</p></div>
+  <p>Leseleksa har i generasjoner vært en bærebjelke. KI løfter tradisjonen i stedet for å bryte med den: eleven leser høyt, får tilbakemelding, øver og blir bedre, nå når som helst og hvor som helst, med en ekstra leselærer som aldri blir sliten.</p>
+  <div class="cards">
+    <div class="card"><span class="tag">Den minste bukken</span><h3>Leseveileder</h3><p>I Engasjerende leser i Microsoft 365. Eleven leser inn en tekst i Word via mikrofon. Etterpå får eleven ord per minutt, prosent riktig, varighet og fem ord å øve mer på. Egnet til egenstyrt lesetrening.</p></div>
+    <div class="card"><span class="tag">Den mellomste bukken</span><h3>Reading Coach</h3><p>Spillbasert. Eleven velger hovedperson, omgivelser og retning på en fortelling, låser opp nye karakterer og får merker og poeng. KI gir tilbakemelding på fem ord som ikke ble lest riktig.</p></div>
+    <div class="card"><span class="tag">Den største bukken</span><h3>Lesefremdrift i Teams</h3><p>Læreren gir leseleksa som oppgave. Eleven leverer lyd- eller videoopptak, og KI lager en rapport. Læreren kan dele den direkte eller bearbeide den først, og kan generere forståelsesspørsmål.</p></div>
+  </div>
+  <div class="vgrid">
+    <figure class="vid" data-yt="QwJ9RKXcV50" data-title="Leseveileder"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Leseveileder"><img src="https://i.ytimg.com/vi/QwJ9RKXcV50/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Leseveileder</span></button></div><figcaption><strong>Leseveileder</strong><span>Slik fungerer verktøyet.</span><a href="https://youtu.be/QwJ9RKXcV50" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="IkoEegIYkrg" data-title="Reading Coach"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Reading Coach"><img src="https://i.ytimg.com/vi/IkoEegIYkrg/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Reading Coach</span></button></div><figcaption><strong>Reading Coach</strong><span>Slik fungerer verktøyet.</span><a href="https://youtu.be/IkoEegIYkrg" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="OvtonOdWzNQ" data-title="Lesefremdrift i Teams"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Lesefremdrift i Teams"><img src="https://i.ytimg.com/vi/OvtonOdWzNQ/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Lesefremdrift i Teams</span></button></div><figcaption><strong>Lesefremdrift i Teams</strong><span>Slik bruker du verktøyet som lærer.</span><a href="https://youtu.be/OvtonOdWzNQ" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  </div>
+  <p>Felles for alle tre er umiddelbar, konkret tilbakemelding. Læreren får samtidig mer treffsikker innsikt til å følge opp hver elev. Verktøyene erstatter ikke læreren.</p>
+  <h3>Insights: læringsanalyse i Microsoft 365</h3>
+  <p>Insights samler dataene, som ord per minutt, riktig leste ord og resultater fra forståelsestester, og viser utviklingen til enkeltelever og hele klassen over tid. Går de fleste frem, men enkelte ikke, bør det «blinke et rødt lys». Da kan du sette inn tiltak tidlig, enten ekstra veiledning, justert tekstnivå eller kontakt med hjemmet. Dataene kan også dokumentere utvikling i foreldresamtaler og kvalitetsarbeid.</p>
+  <p>Insights er likevel omstridt. Enkelte kommuner, som Oslo, har valgt å ikke aktivere det på grunn av personvern og datalagring. Slike systemer krever tydelige rutiner for datasikkerhet, informert samtykke og respekt for elevenes rettigheter.</p>
+  <figure class="vid" data-yt="8BC3Gg9i4HQ" data-title="Insights"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Insights"><img src="https://i.ytimg.com/vi/8BC3Gg9i4HQ/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Insights</span></button></div><figcaption><strong>Insights</strong><span>Visning av verktøyet.</span><a href="https://youtu.be/8BC3Gg9i4HQ" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  <h3>NotebookLM som innledning til en tekst</h3>
+  <p>NotebookLM gir tre veier inn i en tekst: en automatisk oppsummering når du laster opp, en podkast du også kan snakke med, og en chat med teksten. Videoen under er laget av en lærer som bruker verktøyet på ulike måter.</p>
+  <figure class="vid" data-yt="XaIn6zse5fM" data-title="Lærer bruker NotebookLM på ulike måter"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Lærer bruker NotebookLM på ulike måter"><img src="https://i.ytimg.com/vi/XaIn6zse5fM/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Lærer bruker NotebookLM på ulike måter</span></button></div><figcaption><strong>Lærer bruker NotebookLM på ulike måter</strong><span>Praktisk demonstrasjon.</span><a href="https://youtu.be/XaIn6zse5fM" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  <p class="srcnote"><span>Kilder</span><a href="http://coach.microsoft.com/" target="_blank" rel="noopener">Reading Coach</a><a href="https://insights.cloud.microsoft/" target="_blank" rel="noopener">Microsoft Insights</a><a href="https://notebooklm.google.com/" target="_blank" rel="noopener">NotebookLM</a></p>
+</section>
+
+<section class="sec" id="ledetekst" aria-labelledby="h-ledetekst"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-ledetekst">Elevens ledetekstkompetanse</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Gode spørsmål gir gode svar. Elever som lærer å skrive presise ledetekster og følge opp med nye spørsmål, bruker KI som samtalepartner og ikke som svarmaskin.</p></div>
+  <p><strong>Ledetekstkompetanse</strong> er evnen til å formulere gode, presise og formålstjenlige spørsmål og instruksjoner til KI. Det er en ny form for digital og språklig kompetanse. Vage ledetekster gir generelle svar, tydelige gir treffsikker hjelp. Det handler om språklig bevissthet, kritisk tenkning og evne til å formulere faglige behov, og det overføres til skriving, kildebruk og informasjonssøk.</p>
+  <p>Kompetansen støtter <strong>aktiv læring</strong>, fordi eleven må vurdere hva hen trenger nå og hvordan det best spørres om, og <strong>tilpasset læring</strong>, fordi eleven kan be om enklere forklaring, sammenligning eller en quiz på eget nivå. Den må øves. Vis eksempler på gode og dårlige ledetekster og la elevene prøve ulike formuleringer.</p>
+  <h3>Fra enkelt spørsmål til dialog</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Enkel ledetekst</th><th>Utvidet ledetekst</th><th>Hva eleven lærer</th></tr></thead>
+    <tbody>
+      <tr><td>Hva er fotosyntese?</td><td>Forklar fotosyntese som om jeg var 10 år, og gi et eksempel fra en hage.</td><td>Be om forklaring på eget nivå, med kontekst.</td></tr>
+      <tr><td>Hva er vulkaner?</td><td>Forklar hvordan en vulkan fungerer med en analogi til en brusflaske som ristes.</td><td>Be om analogier som gjør komplekse ting forståelige.</td></tr>
+      <tr><td>Hva er årsaken til klimaendringer?</td><td>Gi tre forklaringer: en naturfaglig, en historisk og en politisk.</td><td>Sammenligne perspektiver.</td></tr>
+      <tr><td>Hva er et demokrati?</td><td>Forklar demokrati, sammenlign med diktatur og lag en tabell over likheter og forskjeller.</td><td>Be KI strukturere stoffet så det støtter refleksjon.</td></tr>
+      <tr><td>Hva betyr biodiversitet?</td><td>Gi et eksempel fra en norsk skog. Hva skjer med økosystemet hvis mangfoldet forsvinner?</td><td>Bygge en samtale der hvert spørsmål følger opp forrige svar.</td></tr>
+      <tr><td>Hva er vannets kretsløp?</td><td>Forklar med en tegnebeskrivelse, og lag en huskeregel.</td><td>Be om forklaringer i flere formater.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" id="oppsummere" aria-labelledby="h-oppsummere"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-oppsummere">Oppsummering som lesestrategi</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>Å kjenne innholdet i en tekst på forhånd gjør den lettere å forstå. En KI-oppsummering kan brukes før, under og etter lesing, men aldri i stedet for å lese.</p></div>
+  <p>Leseforskning viser at kjennskap til innholdet gir bedre tekstforståelse. Ledeteksten «Oppsummer» kan derfor støtte læring på tre tidspunkt:</p>
+  <div class="cards">
+    <div class="card"><span class="tag">Før</span><p>Gir oversikt og fungerer som en orienterende strategi, omtrent som å lese overskrifter og ingress. En lang fagtekst virker mindre overveldende.</p></div>
+    <div class="card"><span class="tag">Under</span><p>Støtter forståelsen. Eleven vet hva teksten handler om, og kan stille spørsmål og finne relevant informasjon.</p></div>
+    <div class="card"><span class="tag">Etter</span><p>Eleven sammenligner egen oppsummering med boten: Hva trakk jeg frem, hva trakk den frem, og hvorfor?</p></div>
+  </div>
+  <p>Be gjerne eksplisitt om form, for eksempel «Oppsummer det viktigste i fem kulepunkter». Elever som skal bruke teksten videre til skriving, muntlig fremføring eller oppgaveløsning får en strukturert oversikt.</p>
+  <h3>Begrensninger</h3>
+  <p>En oppsummering tar ikke nødvendigvis med det viktigste og prioriterer ikke alltid riktig. Be om en utdypende versjon hvis den ikke gir nok. For elever med norsk som andrespråk eller lesevansker kan oppsummering gjøre arbeidet mer tilgjengelig, men den skal brukes <mark>i tillegg til</mark> å lese hele teksten.</p>
+  <p class="srcnote"><span>Kilder</span><em>Kverndokken (2015)</em></p>
+</section>
+
+<section class="sec" id="oversetter" aria-labelledby="h-oversetter"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-oversetter">KI som oversetter</h2></header>
+  <p>Chatboter oversetter raskt, og det åpner muligheter, men også problemer. Både fordeler og ulemper bør vurderes.</p>
+  <div class="cards two">
+    <div class="card"><span class="tag">Fordeler</span>
+      <ul>
+        <li>Rask tilgang til forståelig innhold. En elev som strever med norsk, kan få en fagtekst på morsmålet og henge med i undervisningen. Office Lens kan hjelpe her.</li>
+        <li>Hjelp til å forstå engelske og andre fremmedspråklige tekster.</li>
+        <li>Ordvalg og struktur når elever skriver på fremmedspråk, og bedre innsikt i hvordan språket virker ved å se egen tekst oversatt.</li>
+        <li>Selvstendighet og mestring i stedet for å vente på hjelp.</li>
+      </ul></div>
+    <div class="card"><span class="tag">Ulemper</span>
+      <ul>
+        <li>Chatboter oversetter ikke alltid riktig til og fra et lite språk som norsk, særlig fagbegreper, idiomer og kulturelle nyanser.</li>
+        <li>Elever kan bli passive i egen språklæring hvis de oversetter hele tekster i stedet for å jobbe med ord og setninger.</li>
+        <li>I vurdering blir det vanskelig å vite hva eleven faktisk mestrer, så bruken må avklares tydelig.</li>
+      </ul></div>
+  </div>
+  <h3>En balansert tilnærming</h3>
+  <p>Snakk med elevene om oversettelse som støtte, ikke erstatning for egen tenkning. Lær dem strategisk bruk: Når skal man oversette? Hva kan man bruke det til? Hvordan kontrollerer man kvaliteten?</p>
+</section>
+
+<section class="sec" id="tankekart" aria-labelledby="h-tankekart"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-tankekart">Tankekart og grafiske organisatorer</h2></header>
+  <p>Notater hjelper eleven å strukturere, bearbeide og huske. Med chatbot kan eleven få hjelp til å ta notater, utvide dem og organisere dem på nye måter.</p>
+  <ul>
+    <li><strong>Grafiske organisatorer:</strong> tidslinjer, kolonneskjemaer og fiskebensdiagrammer. Skolebot kan lage tankekart og tidslinjer.</li>
+    <li><strong>Tankekart:</strong> en visuell læringsstrategi som viser helhet, struktur og sammenhenger. En tekst om demokrati kan bli et nettverk der «folkestyre», «valg», «maktfordeling» og «ytringsfrihet» henger sammen. Har du tilgang til Google, kan NotebookLM lage tankekart.</li>
+    <li><strong>Før skriving:</strong> eleven kan lage en visuell oversikt over argumenter, fakta og eksempler som planleggingsverktøy.</li>
+    <li><strong>Formatering:</strong> hovedpunkter, overskrifter, punktlister, tabeller og fargekoder som skiller definisjoner, eksempler, spørsmål og forklaringer.</li>
+  </ul>
+  <p>Elevene må selv vurdere hvilke forslag de bruker. Da blir KI en samarbeidspartner i utviklingen av egne læringsstrategier.</p>
+  <p class="srcnote"><span>Kilder</span><em>Davies (2011)</em><a href="https://skolebot.no/" target="_blank" rel="noopener">Skolebot</a><a href="https://notebooklm.google.com/" target="_blank" rel="noopener">NotebookLM</a></p>
+</section>
+
+<section class="sec" id="matte" aria-labelledby="h-matte"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-matte">Matematikk: forklar oppgaven</h2></header>
+  <p>Mange elever møter veggen i matematikk når de ikke forstår <em>hvordan</em> og <em>hvorfor</em> de skal løse en oppgave. KI kan gi trinnvise forklaringer i elevens eget tempo.</p>
+  <ul>
+    <li>Forklare oppgaven trinnvis: hva gjør vi først, hvorfor, hva betyr begrepet?</li>
+    <li>Gi alternative forklaringer og løsningsmetoder.</li>
+    <li>Omformulere oppgaven til enklere språk.</li>
+    <li>Visualisere matematiske idéer og tekstoppgaver.</li>
+    <li>Hjelpe eleven å kontrollere og forstå egne utregninger.</li>
+  </ul>
+  <h3>Eksempel: Amir i 8. klasse</h3>
+  <p>Amir strever med å forstå hva tekstoppgaver spør om. I timen lærer han å bruke Skolebots matteguide. Han limer inn oppgaven og ber den forklare hva han må finne ut og hvordan den kan løses. Boten forklarer vanskelige ord og viser hvilke tall og begreper han trenger. Deretter prøver Amir selv og bruker boten til å sjekke om tenkingen er på rett spor. Den blir en «tenkekompis» hjemme.</p>
+  <h3>Tips i klasserommet</h3>
+  <p>Har du ikke Skolebot, kan du gi elevene gode ledetekster som «Forklar med egne ord», «Vis meg trinnene» og «Hva betyr dette?». Modeller i plenum hvordan KI brukes i en tenkeprosess og ikke som løsningsautomat. Legg opp til matematisk samtale der elevene sammenligner egen løsning med chatbotens forklaring. NotebookLM kan også «snakke» med oppgavesamlinger.</p>
+  <h3>Spørsmål til profesjonsfellesskapet</h3>
+  <ul>
+    <li>Hvordan kan elevene bruke KI til å <em>forstå</em> matematikk og ikke bare få riktig svar?</li>
+    <li>Hvilke ledetekster gir gode forklaringer?</li>
+    <li>Hvordan vurderer du forståelsen når eleven får hjelp underveis?</li>
+    <li>Hvordan balanserer vi støtte og selvstendig tenkning?</li>
+  </ul>
+  <p class="srcnote"><span>Kilder</span><a href="https://skolebot.no/" target="_blank" rel="noopener">Skolebot</a></p>
+</section>
+
+<section class="sec" id="notebooklm" aria-labelledby="h-notebooklm"><header class="sec-head"><p class="eyebrow">Modul 2 · Tilrettelagt undervisning</p><h2 id="h-notebooklm">Googles NotebookLM</h2></header>
+  <div class="kort"><b>Kort sagt</b><p>NotebookLM lar deg laste opp egne dokumenter og samtale med dem. Svarene bygger på det du lastet opp, og verktøyet kan også lage podkast, videooversikt og tankekart.</p></div>
+  <p>NotebookLM er en KI-tjeneste fra Google som fungerer som personlig læringsassistent for komplekse tekstkilder. Det som skiller den fra mer generelle tjenester, er at den svarer <em>ut fra det opplastede innholdet</em>. Den bruker RAG-teknologi: modellen henter informasjon fra dokumentene dine og kombinerer den med sin språkforståelse. Svaret blir knyttet til akkurat det stoffet eleven jobber med.</p>
+  <h3>Ni bruksområder for eleven</h3>
+  <div class="cards">
+    <div class="card"><span class="tag">1</span><h4>Forstå vanskelige tekster</h4><p>«Hva handler teksten om?», «Forklar avsnittet med enklere ord», «Hva betyr økologisk balanse her?»</p></div>
+    <div class="card"><span class="tag">2</span><h4>Oppsummeringer og oversikter</h4><p>Hovedpunkter, punktlister, begrepsforklaringer og spørsmål-og-svar-par til repetisjon.</p></div>
+    <div class="card"><span class="tag">3</span><h4>Stille egne spørsmål</h4><p>En samtale om innholdet fremmer dybdelæring, fordi eleven må formulere spørsmål og vurdere svar.</p></div>
+    <div class="card"><span class="tag">4</span><h4>Sammenligne kilder</h4><p>Last opp flere dokumenter og få likheter, forskjeller og forbindelser.</p></div>
+    <div class="card"><span class="tag">5</span><h4>Skriveforberedelse</h4><p>Argumenter i teksten, struktur for en fagartikkel, idéutvikling.</p></div>
+    <div class="card"><span class="tag">6</span><h4>Audiosammendrag</h4><p>Lytt til et sammendrag, nyttig på vei til skolen eller for elever med lesevansker.</p></div>
+    <div class="card"><span class="tag">7</span><h4>Videooversikter</h4><p>Manus og struktur til korte forklaringsvideoer. Læring gjennom produksjon.</p></div>
+    <div class="card"><span class="tag">8</span><h4>Tankekart</h4><p>Sammenhenger mellom sentrale begreper. Kan eksporteres til MindMeister eller Canva.</p></div>
+    <div class="card"><span class="tag">9</span><h4>Faglige rapporter</h4><p>Problemstilling, fagbegreper, hypoteser, observasjoner og struktur med innledning, drøfting og konklusjon.</p></div>
+  </div>
+  <p>Som alle KI-verktøy er NotebookLM et verktøy i læringsprosessen, ikke en erstatning for egen innsats eller lærerens rolle.</p>
+
+  <h3>Audio-sammendrag: en podkast av dokumentene</h3>
+  <p>Du laster opp ett eller flere dokumenter, og verktøyet lager et manus og en lydfil der to KI-stemmer som «verter» diskuterer innholdet som en samtale. Du kan påvirke spørsmål, tone og perspektiv før lyden lages. Norske stemmer kom i april 2025, men kurset opplever fortsatt at oppsummeringene blir bedre og lengre på engelsk. Da setter du «Resultatspråk» til engelsk.</p>
+  <p>Mulige bruksmåter: en samfunnsfagslærer laster opp en avisartikkel om en konflikt og lar elevene lytte før diskusjonen. En lærer på videregående bruker podkasten som repetisjon før en prøve. Den gir også en annen inngang for elever med lese- eller konsentrasjonsvansker. Læreren blir kurator, og må vurdere kvaliteten før bruk, fordi KI-innhold kan inneholde feil og forenklinger.</p>
+  <div class="vgrid">
+    <figure class="vid" data-yt="Fghwa0scUgw" data-title="NotebookLM: Googles hemmelige superkraft"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: NotebookLM: Googles hemmelige superkraft"><img src="https://i.ytimg.com/vi/Fghwa0scUgw/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">NotebookLM: Googles hemmelige superkraft</span></button></div><figcaption><strong>NotebookLM: Googles hemmelige superkraft</strong><span>Podkastepisode der Odin og Magnus deler erfaringer, og NotebookLM lager en podkast om podkasten.</span><a href="https://youtu.be/Fghwa0scUgw" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="0fp09WPeO0s" data-title="Lag oppsummerende podkast med NotebookLM"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Lag oppsummerende podkast med NotebookLM"><img src="https://i.ytimg.com/vi/0fp09WPeO0s/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Lag oppsummerende podkast med NotebookLM</span></button></div><figcaption><strong>Lag oppsummerende podkast med NotebookLM</strong><span>Slik lager du et audio-sammendrag.</span><a href="https://youtu.be/0fp09WPeO0s" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="voH9-m3iStU" data-title="Del eller last ned podkasten"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Del eller last ned podkasten"><img src="https://i.ytimg.com/vi/voH9-m3iStU/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Del eller last ned podkasten</span></button></div><figcaption><strong>Del eller last ned podkasten</strong><span>Slik deler du eller laster ned den ferdige lydfilen.</span><a href="https://youtu.be/voH9-m3iStU" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  </div>
+
+  <h3>Interaktiv modus: snakk med teksten</h3>
+  <p>Interaktiv modus lar deg stille spørsmål direkte til dokumentene og få svar fra verktøyet, som å ha en faglig samtale med en kollega som har lest det samme. Svarene er forankret i dokumentet, og NotebookLM viser som regel hvor i teksten svaret kommer fra. Du kan stille oppfølgingsspørsmål i samme tråd og gå gradvis i dybden. En lærerstudiegruppe kan for eksempel analysere læreplanen sammen og stille spørsmål til den.</p>
+  <p>Interaktiv modus fungerer foreløpig bare når «Resultatspråk» er satt til engelsk. Slik bytter du: klikk «Innstillinger» øverst til høyre, velg «Resultatspråk», velg «English» og lagre.</p>
+  <figure class="vid" data-yt="oVgLMuA_P0Q" data-title="Å snakke med teksten: interaktiv modus"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Å snakke med teksten: interaktiv modus"><img src="https://i.ytimg.com/vi/oVgLMuA_P0Q/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Å snakke med teksten: interaktiv modus</span></button></div><figcaption><strong>Å snakke med teksten: interaktiv modus</strong><span>Magnus viser en løpende samtale med oppfølgingsspørsmål.</span><a href="https://youtu.be/oVgLMuA_P0Q" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+
+  <h3>Elevers bruk og personvern</h3>
+  <p>Du står fritt til å bruke NotebookLM i egen planlegging. For at elevene skal bruke det, må skolen eller skoleeier ha en gyldig databehandleravtale. NotebookLM er nå en del av Google Workspace for Education, men det betyr ikke automatisk tilgang. Kommunen må ha aktivert tjenesten, så kontakt IKT-ansvarlig. Plus-versjonen har utvidede funksjoner, men standardversjonen dekker de fleste behov i skolen.</p>
+
+  <h3>Videoopptak med synlig taler</h3>
+  <p>Når du skal vise andre hvordan du bruker et verktøy, kan du spille inn skjermen mens du selv er synlig. Kurset viser dette i to opplæringsvideoer, med Stream og Panopto.</p>
+  <div class="vgrid">
+    <figure class="vid" data-yt="rN0otMrUNKI" data-title="Screencast med synlig taler, del 1"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Screencast med synlig taler, del 1"><img src="https://i.ytimg.com/vi/rN0otMrUNKI/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Screencast med synlig taler, del 1</span></button></div><figcaption><strong>Screencast med synlig taler, del 1</strong><span>Opplæring i innspilling i et av videoverktøyene.</span><a href="https://youtu.be/rN0otMrUNKI" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+    <figure class="vid" data-yt="maaxxcI_z4Y" data-title="Screencast med synlig taler, del 2"><div class="vid-frame"><button class="vid-play" type="button" aria-label="Spill av videoen: Screencast med synlig taler, del 2"><img src="https://i.ytimg.com/vi/maaxxcI_z4Y/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="vid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span><span class="vid-title">Screencast med synlig taler, del 2</span></button></div><figcaption><strong>Screencast med synlig taler, del 2</strong><span>Opplæring i innspilling i det andre videoverktøyet.</span><a href="https://youtu.be/maaxxcI_z4Y" target="_blank" rel="noopener">Åpne på YouTube</a></figcaption></figure>
+  </div>
+  <p class="srcnote"><span>Kilder</span><a href="https://notebooklm.google/" target="_blank" rel="noopener">Google (2024a)</a><a href="https://blog.google/technology/ai/notebooklm-audio-overviews/" target="_blank" rel="noopener">Google (2024b)</a><a href="https://support.google.com/notebooklm/answer/15678219?hl=en" target="_blank" rel="noopener">NotebookLM Plus</a><a href="https://www.linkedin.com/pulse/hva-er-retrieval-augmented-generation-rag-og-hvorfor-hjelseth-hansen-ws6of/" target="_blank" rel="noopener">Hva er RAG?</a><a href="https://notebooklm.google.com/" target="_blank" rel="noopener">NotebookLM</a></p>
+</section>
+
+<section class="sec" id="videoer" aria-labelledby="h-videoer"><header class="sec-head"><p class="eyebrow">Samlet oversikt</p><h2 id="h-videoer">Alle videoene</h2></header>
+  <p>Alle videoer fra kurset ligger i temaene sine og spilles av på siden. Her er en samlet liste med hopp til riktig sted.</p>
+  <div class="vindex"><ol><li><a href="#om-kurset">Velkommen til kurset</a><small>I temaet «Om kurset»</small></li><li><a href="#dialogopplegg">Hva har du lært i dag?</a><small>I temaet «Dialogopplegg om generativ KI»</small></li><li><a href="#dialogopplegg">Deepfake med Jordan Peele og Barack Obama</a><small>I temaet «Dialogopplegg om generativ KI»</small></li><li><a href="#dialogopplegg">Video til diskusjonen om deepfakes</a><small>I temaet «Dialogopplegg om generativ KI»</small></li><li><a href="#dialogopplegg">Når generativ KI vikles sammen med personlige relasjoner</a><small>I temaet «Dialogopplegg om generativ KI»</small></li><li><a href="#m2-oversikt">Velkommen til modul 2</a><small>I temaet «Oversikt og fagspesifikke chatboter»</small></li><li><a href="#m2-oversikt">Slik bruker du fagspesifikke chatboter</a><small>I temaet «Oversikt og fagspesifikke chatboter»</small></li><li><a href="#kompenserende">KI som kompenserende og utjevnende teknologi</a><small>I temaet «KI som utjevnende teknologi»</small></li><li><a href="#kompenserende">Kunstig intelligens – dyslektikerens beste venn</a><small>I temaet «KI som utjevnende teknologi»</small></li><li><a href="#forenkle">Forenkle en tekst til elevens nivå</a><small>I temaet «Forenkle og differensiere tekster»</small></li><li><a href="#forenkle">Differensiere tekster med ChatGPT</a><small>I temaet «Forenkle og differensiere tekster»</small></li><li><a href="#uu">Alternativ tekst på bilder</a><small>I temaet «Universell utforming»</small></li><li><a href="#transkribering">Autotekst fra UiO</a><small>I temaet «Teksting og transkribering»</small></li><li><a href="#transkribering">Videoinnspilling og automatisk teksting i Clipchamp</a><small>I temaet «Teksting og transkribering»</small></li><li><a href="#transkribering">Mer om automatisk teksting</a><small>I temaet «Teksting og transkribering»</small></li><li><a href="#transkribering">Videoinnspilling og teksting i Panopto</a><small>I temaet «Teksting og transkribering»</small></li><li><a href="#transkribering">Transkribere lydfiler</a><small>I temaet «Teksting og transkribering»</small></li><li><a href="#transkribering">Møtereferat med KI</a><small>I temaet «Teksting og transkribering»</small></li><li><a href="#skriveprosess">Diktering: tale-til-tekst</a><small>I temaet «Skriving med KI som støtte»</small></li><li><a href="#skriveprosess">Diktering i Windows</a><small>I temaet «Skriving med KI som støtte»</small></li><li><a href="#skriveprosess">Språkvask med ledeteksten «Gjør denne teksten bedre»</a><small>I temaet «Skriving med KI som støtte»</small></li><li><a href="#skriveprosess">Finn skrivefeil og vis hvor de står</a><small>I temaet «Skriving med KI som støtte»</small></li><li><a href="#skriveprosess">Podkast: KI for å støtte skriveprosesser</a><small>I temaet «Skriving med KI som støtte»</small></li><li><a href="#talesyntese">Å lese med ørene</a><small>I temaet «Å lese med ørene»</small></li><li><a href="#leseverktoy">Leseveileder</a><small>I temaet «KI i leseopplæringen»</small></li><li><a href="#leseverktoy">Reading Coach</a><small>I temaet «KI i leseopplæringen»</small></li><li><a href="#leseverktoy">Lesefremdrift i Teams</a><small>I temaet «KI i leseopplæringen»</small></li><li><a href="#leseverktoy">Insights</a><small>I temaet «KI i leseopplæringen»</small></li><li><a href="#leseverktoy">Lærer bruker NotebookLM på ulike måter</a><small>I temaet «KI i leseopplæringen»</small></li><li><a href="#notebooklm">NotebookLM: Googles hemmelige superkraft</a><small>I temaet «Googles NotebookLM»</small></li><li><a href="#notebooklm">Lag oppsummerende podkast med NotebookLM</a><small>I temaet «Googles NotebookLM»</small></li><li><a href="#notebooklm">Del eller last ned podkasten</a><small>I temaet «Googles NotebookLM»</small></li><li><a href="#notebooklm">Å snakke med teksten: interaktiv modus</a><small>I temaet «Googles NotebookLM»</small></li><li><a href="#notebooklm">Screencast med synlig taler, del 1</a><small>I temaet «Googles NotebookLM»</small></li><li><a href="#notebooklm">Screencast med synlig taler, del 2</a><small>I temaet «Googles NotebookLM»</small></li></ol></div>
+</section>
+
+<section class="sec" id="kilder" aria-labelledby="h-kilder"><header class="sec-head"><p class="eyebrow">Samlet oversikt</p><h2 id="h-kilder">Kilder</h2></header>
+  <p>Kildene under er de kurset bygger på. Hvert tema har også sin egen kildelinje. Under hver kilde ser du hvor den er brukt.</p>
+  <h3>Faglitteratur, rapporter og artikler</h3>
+  <ul class="refs"><li>AI for Education. Student self-reflection checklist.<span class="host"><a href="https://www.aiforeducation.io/blog/new-student-resource-release" target="_blank" rel="noopener">www.aiforeducation.io/blog/new-student-resource-release</a></span><span class="used">Brukt i: <a href="#samtalekort">Samtalekort og egenevaluering</a></span></li><li>Bjørkeng, P. K. (09.10.2023). Taperne kan bli vinnerne av KI-revolusjonen. Aftenposten.<span class="host"><a href="https://www.aftenposten.no/kultur/i/wAzroA/taperne-kan-bli-vinnerne-av-ki-revolusjonen" target="_blank" rel="noopener">www.aftenposten.no/kultur/i/wAzroA/taperne-kan-bli-vinnerne-av-ki-revolusjonen</a></span><span class="used">Brukt i: <a href="#kompenserende">KI som utjevnende teknologi</a></span></li><li>Bowen, J. A. &amp; Watson, C. E. (2024). Teaching with AI: A practical guide to a new era of human learning. Johns Hopkins University Press.<span class="used">Brukt i: <a href="#skrive">Å skrive med KI</a></span></li><li>Davies, M. (2011). Concept mapping, mind mapping and argument mapping: what are the differences and do they matter? Higher Education, 62(3), 279-301.<span class="used">Brukt i: <a href="#tankekart">Tankekart og grafiske organisatorer</a></span></li><li>Den Nationale Ungedialog om Generativ AI (2025). The Voice of Young People in the Conversation on Generative AI.<span class="host"><a href="https://videnogdemokrati.dk/app/uploads/2025/01/DEMX.AI-rapport.final-01c-pixi-1.pdf" target="_blank" rel="noopener">videnogdemokrati.dk/app/uploads/2025/01/DEMX.AI-rapport.final-01c-pixi-1.pdf</a></span><span class="used">Brukt i: <a href="#ungdomsstemme">Unge om generativ KI</a></span></li><li>Elstad, E. (2024). Skolens møte med KI. Bedre Skole 4/2023, hentet fra Utdanningsforskning.no.<span class="host"><a href="https://utdanningsforskning.no/artikler/2024/skolens-mote-med-generativ-kunstig-intelligens/" target="_blank" rel="noopener">utdanningsforskning.no/artikler/2024/skolens-mote-med-generativ-kunstig-intelligens/</a></span><span class="used">Brukt i: <a href="#hva-er-genki">Hva er generativ KI?</a>, <a href="#laering-vs-produktivitet">Læring eller produktivitet?</a></span></li><li>Engeness, I. (2025). Cultural-Historical Perspective to Design Pedagogical AI for Enhancing Student Writing. Technology, Knowledge and Learning, 1-22.<span class="used">Brukt i: <a href="#skriveprosess">Skriving med KI som støtte</a></span></li><li>Estampa. (2024). Cartography of generative AI.<span class="host"><a href="https://cartography-of-generative-ai.net/genai_cartography.pdf" target="_blank" rel="noopener">cartography-of-generative-ai.net/genai_cartography.pdf</a></span><span class="used">Brukt i: <a href="#kartlegging">Et kart over generativ KI</a></span></li><li>Folkeskolen.dk (18.01.2025). Forældre vil have obligatorisk teknologifag på skoleskemaet.<span class="host"><a href="https://www.folkeskolen.dk/it-teknologiforstaelse/foraeldre-vil-have-obligatorisk-teknologifag-pa-skoleskemaet/4796071" target="_blank" rel="noopener">www.folkeskolen.dk/it-teknologiforstaelse/foraeldre-vil-have-obligatorisk-teknologifag-pa-skoleskemaet/4796071</a></span><span class="used">Brukt i: <a href="#danmark">Det danske perspektivet</a></span></li><li>Google (2024a). NotebookLM: A powerful new way to work with your notes.<span class="host"><a href="https://notebooklm.google/" target="_blank" rel="noopener">notebooklm.google</a></span><span class="used">Brukt i: <a href="#notebooklm">Googles NotebookLM</a></span></li><li>Google (2024b). NotebookLM&#x27;s Audio Overviews turn your notes into a podcast.<span class="host"><a href="https://blog.google/technology/ai/notebooklm-audio-overviews/" target="_blank" rel="noopener">blog.google/technology/ai/notebooklm-audio-overviews/</a></span><span class="used">Brukt i: <a href="#notebooklm">Googles NotebookLM</a></span></li><li>Google. NotebookLM Plus.<span class="host"><a href="https://support.google.com/notebooklm/answer/15678219?hl=en" target="_blank" rel="noopener">Hjelpeside: support.google.com/notebooklm/answer/15678219</a></span><span class="host"><a href="https://workspaceupdates.googleblog.com/2025/02/notebooklm-and-notebooklm-plus-now-workspace-core-service.html" target="_blank" rel="noopener">Workspace-oppdatering: workspaceupdates.googleblog.com/2025/02/notebooklm-and-notebooklm-plus-now-workspace-core-service.html</a></span><span class="used">Brukt i: <a href="#notebooklm">Googles NotebookLM</a></span></li><li>Hertzberg, F. &amp; Dysthe, O. (2012). Prosesskriving: hvor står vi i dag? I Teorier om tekst i møte med skolens lese- og skrivepraksiser (s. 59-71). Universitetsforlaget.<span class="used">Brukt i: <a href="#skriveprosess">Skriving med KI som støtte</a></span></li><li>Hjelseth Hansen. Hva er Retrieval-Augmented Generation (RAG) og hvorfor er det viktig? LinkedIn.<span class="host"><a href="https://www.linkedin.com/pulse/hva-er-retrieval-augmented-generation-rag-og-hvorfor-hjelseth-hansen-ws6of/" target="_blank" rel="noopener">www.linkedin.com/pulse/hva-er-retrieval-augmented-generation-rag-og-hvorfor-hjelseth-hansen-ws6of/</a></span><span class="used">Brukt i: <a href="#m2-oversikt">Oversikt og fagspesifikke chatboter</a>, <a href="#notebooklm">Googles NotebookLM</a></span></li><li>Holm, m.fl. (2025). Dialogformat om Generativ AI.<span class="host"><a href="https://videnogdemokrati.dk/app/uploads/2025/01/DEMX.AI-rapport.final-01a_rapport.pdf" target="_blank" rel="noopener">videnogdemokrati.dk/app/uploads/2025/01/DEMX.AI-rapport.final-01a_rapport.pdf</a></span><span class="used">Brukt i: <a href="#dialogopplegg">Dialogopplegg om generativ KI</a></span></li><li>Hyland, K. (2026). Writing in the AI era: Rethinking writing, research and teaching. Journal of Second Language Writing.<span class="host"><a href="https://doi.org/10.1016/j.jslw.2026.101302" target="_blank" rel="noopener">doi.org/10.1016/j.jslw.2026.101302</a></span><span class="used">Brukt i: <a href="#hyland">Skriving i KI-ens tid</a></span></li><li>Intervju med Idor Svensson, professor i psykologi ved Linnéuniversitetet.<span class="host"><a href="https://play.lnu.se/media/t/0_tx7xjfx4" target="_blank" rel="noopener">play.lnu.se/media/t/0_tx7xjfx4</a></span><span class="used">Brukt i: <a href="#talesyntese">Å lese med ørene</a></span></li><li>Kverndokken, K. (2015). 101 måter å lese leseleksa på. Fagbokforlaget.<span class="used">Brukt i: <a href="#oppsummere">Oppsummering som lesestrategi</a></span></li><li>Let AI Read First (2025). Studie med 150 dyslektikere og store språkmodeller.<span class="host"><a href="https://arxiv.org/pdf/2504.00941" target="_blank" rel="noopener">arxiv.org/pdf/2504.00941</a></span><span class="used">Brukt i: <a href="#kompenserende">KI som utjevnende teknologi</a></span></li><li>Læreplanverket, overordnet del 2.3: Grunnleggende ferdigheter.<span class="host"><a href="https://www.udir.no/lk20/overordnet-del/prinsipper-for-laring-utvikling-og-danning/grunnleggende-ferdigheter/" target="_blank" rel="noopener">www.udir.no/lk20/overordnet-del/prinsipper-for-laring-utvikling-og-danning/grunnleggende-ferdigheter/</a></span><span class="used">Brukt i: <a href="#ferdigheter">Fem grunnleggende ferdigheter</a></span></li><li>Medietilsynet. Undervisningsopplegg om deepfakes.<span class="host"><a href="https://www.medietilsynet.no/globalassets/deepfakes/201106-v4-deepfake-undervisningsopplegg.pdf" target="_blank" rel="noopener">www.medietilsynet.no/globalassets/deepfakes/201106-v4-deepfake-undervisningsopplegg.pdf</a></span><span class="used">Brukt i: <a href="#dialogopplegg">Dialogopplegg om generativ KI</a></span></li><li>Musaeus, L. H., Jensen, A. V., Petersen, M. G. &amp; Iversen, O. S. (2023). Digital teknologiforståelse i grundskolen og gymnasiet. Tidsskriftet Læring og Medier, 16(28).<span class="host"><a href="https://doi.org/10.7146/lom.v16i28.136097" target="_blank" rel="noopener">doi.org/10.7146/lom.v16i28.136097</a></span><span class="used">Brukt i: <a href="#danmark">Det danske perspektivet</a></span></li><li>Nasjonalt senter for skriveopplæring og skriveforskning (2024). Utforsking av kunstig intelligens i klasserommet.<span class="host"><a href="https://skrivesenteret.no/ressurs/utforsking-av-kunstig-intelligens-i-klasserommet/" target="_blank" rel="noopener">Ressurs: skrivesenteret.no/ressurs/utforsking-av-kunstig-intelligens-i-klasserommet/</a></span><span class="host"><a href="https://skrivesenteret.no/wp-content/uploads/2024/06/dialogspill-spillbrett--ki-og-sprakmodeller.pdf" target="_blank" rel="noopener">Spillbrett (PDF): skrivesenteret.no/wp-content/uploads/2024/06/dialogspill-spillbrett--ki-og-sprakmodeller.pdf</a></span><span class="used">Brukt i: <a href="#dialogspill">Dialogspillet «Snakk om KI»</a></span></li><li>Navigating the Jagged Technological Frontier: Field Experimental Evidence of the Effects of AI on Knowledge Worker Productivity and Quality (2023).<span class="host"><a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4573321" target="_blank" rel="noopener">papers.ssrn.com/sol3/papers.cfm</a></span><span class="used">Brukt i: <a href="#kompenserende">KI som utjevnende teknologi</a></span></li><li>Pedagogisk intelligens, episode 5: Dyslektikerens beste venn.<span class="host"><a href="https://open.spotify.com/episode/2gARDZ3sefBDhoESCj7JvM" target="_blank" rel="noopener">Spotify: open.spotify.com/episode/2gARDZ3sefBDhoESCj7JvM</a></span><span class="host"><a href="https://soundcloud.com/pedagogisk-intelligens/episode-5-dyslektikerens-beste-venn" target="_blank" rel="noopener">SoundCloud: soundcloud.com/pedagogisk-intelligens/episode-5-dyslektikerens-beste-venn</a></span><span class="host"><a href="https://podcasts.apple.com/us/podcast/episode-5-dyslektikerens-beste-venn/id1671558782?i=1000601381863" target="_blank" rel="noopener">Apple Podcasts: podcasts.apple.com/us/podcast/episode-5-dyslektikerens-beste-venn/id1671558782</a></span><span class="used">Brukt i: <a href="#kompenserende">KI som utjevnende teknologi</a></span></li><li>Store medisinske leksikon. Nevrodivergent.<span class="host"><a href="https://sml.snl.no/nevrodivergent" target="_blank" rel="noopener">sml.snl.no/nevrodivergent</a></span><span class="used">Brukt i: <a href="#nevro">Struktur for elever med ADHD</a></span></li><li>Tenk.faktisk.no. Samtalekort om kunstig intelligens og kildebevissthet.<span class="host"><a href="https://tenk.faktisk.no/samtalekort/kunstig-intelligens-og-kildebevissthet" target="_blank" rel="noopener">Samtalekort: tenk.faktisk.no/samtalekort/kunstig-intelligens-og-kildebevissthet</a></span><span class="host"><a href="https://tenk.faktisk.no/samling/ki" target="_blank" rel="noopener">Undervisningsopplegg: tenk.faktisk.no/samling/ki</a></span><span class="used">Brukt i: <a href="#samtalekort">Samtalekort og egenevaluering</a></span></li><li>Udir (2024). Hvorfor må skolene jobbe med KI?<span class="host"><a href="https://www.udir.no/kvalitet-og-kompetanse/digitalisering-skole/kunstig-intelligens-i-skolen/hvorfor-ki-skolen/" target="_blank" rel="noopener">www.udir.no/kvalitet-og-kompetanse/digitalisering-skole/kunstig-intelligens-i-skolen/hvorfor-ki-skolen/</a></span><span class="used">Brukt i: <a href="#lareplan">KI og læreplanen</a></span></li><li>Udir. Administrere eksamen, kandidater med behov for særskilt tilrettelegging.<span class="host"><a href="https://www.udir.no/eksamen-og-prover/eksamen/administrere-eksamen/" target="_blank" rel="noopener">www.udir.no/eksamen-og-prover/eksamen/administrere-eksamen/</a></span><span class="used">Brukt i: <a href="#skriveprosess">Skriving med KI som støtte</a></span></li><li>Udir. Finn læreplan.<span class="host"><a href="https://sokeresultat.udir.no/finn-lareplan.html" target="_blank" rel="noopener">sokeresultat.udir.no/finn-lareplan.html</a></span><span class="used">Brukt i: <a href="#digitale">Digitale ferdigheter i fagene</a></span></li><li>Udir. Grunnleggende ferdigheter i kunst og håndverk (KHV01-03).<span class="host"><a href="https://www.udir.no/lk20/khv01-03/om-faget/grunnleggende-ferdigheter" target="_blank" rel="noopener">www.udir.no/lk20/khv01-03/om-faget/grunnleggende-ferdigheter</a></span><span class="used">Brukt i: <a href="#digitale">Digitale ferdigheter i fagene</a></span></li><li>Udir. Grunnleggende ferdigheter i matematikk (MAT01-06).<span class="host"><a href="https://www.udir.no/lk20/mat01-06/om-faget/grunnleggende-ferdigheter" target="_blank" rel="noopener">www.udir.no/lk20/mat01-06/om-faget/grunnleggende-ferdigheter</a></span><span class="used">Brukt i: <a href="#digitale">Digitale ferdigheter i fagene</a></span></li><li>Udir. Grunnleggende ferdigheter i samfunnsfag (SAF01-05).<span class="host"><a href="https://www.udir.no/lk20/saf01-05/om-faget/grunnleggende-ferdigheter" target="_blank" rel="noopener">www.udir.no/lk20/saf01-05/om-faget/grunnleggende-ferdigheter</a></span><span class="used">Brukt i: <a href="#digitale">Digitale ferdigheter i fagene</a></span></li><li>Udir. Kunnskap om kunstig intelligens som teknologi.<span class="host"><a href="https://www.udir.no/kvalitet-og-kompetanse/digitalisering-skole/kunstig-intelligens-i-skolen/rad-om-kunstig-intelligens-skolen/" target="_blank" rel="noopener">www.udir.no/kvalitet-og-kompetanse/digitalisering-skole/kunstig-intelligens-i-skolen/rad-om-kunstig-intelligens-skolen/</a></span><span class="used">Brukt i: <a href="#lareplan">KI og læreplanen</a></span></li><li>Utdanningsnytt. Med dette spillet fant forskerne tre av fire elever med lesevansker.<span class="host"><a href="https://www.utdanningsnytt.no/ai-chatgpt-dysleksi/med-dette-spillet-fant-forskerne-tre-av-fire-elever-med-lesevansker/380897" target="_blank" rel="noopener">www.utdanningsnytt.no/ai-chatgpt-dysleksi/med-dette-spillet-fant-forskerne-tre-av-fire-elever-med-lesevansker/380897</a></span><span class="used">Brukt i: <a href="#kompenserende">KI som utjevnende teknologi</a></span></li><li>Utdanningsnytt. Sindre (14) leser nå med ørene og får endelig ta nasjonale prøver.<span class="host"><a href="https://www.utdanningsnytt.no/dysleksi-leseproblemer-nasjonale-prover/sindre-14-leser-na-med-orene-og-far-endelig-ta-nasjonale-prover/334826" target="_blank" rel="noopener">www.utdanningsnytt.no/dysleksi-leseproblemer-nasjonale-prover/sindre-14-leser-na-med-orene-og-far-endelig-ta-nasjonale-prover/334826</a></span><span class="used">Brukt i: <a href="#talesyntese">Å lese med ørene</a></span></li></ul>
+  <h3>Verktøy og tjenester</h3>
+  <ul class="refs"><li>Apple. Les opp innhold på iPad.<span class="host"><a href="https://support.apple.com/no-no/guide/ipad/ipad9a247097/ipados" target="_blank" rel="noopener">support.apple.com/no-no/guide/ipad/ipad9a247097/ipados</a></span><span class="used">Brukt i: <a href="#talesyntese">Å lese med ørene</a></span></li><li>Autotekst: transkribering av lyd og video (UiO).<span class="host"><a href="https://autotekst.uio.no/nb" target="_blank" rel="noopener">autotekst.uio.no/nb</a></span><span class="used">Brukt i: <a href="#transkribering">Teksting og transkribering</a></span></li><li>CC Tenkemotoren (Randaberg kommune): pedagogiske prateroboter og tekstverksted.<span class="host"><a href="https://cc.tenkemotoren.no/" target="_blank" rel="noopener">Forside: cc.tenkemotoren.no</a></span><span class="host"><a href="https://cc.tenkemotoren.no/tekstverksted/" target="_blank" rel="noopener">Tekstverksted: cc.tenkemotoren.no/tekstverksted/</a></span><span class="used">Brukt i: <a href="#velge-verktoy">Hvilket verktøy skal jeg velge?</a>, <a href="#m2-oversikt">Oversikt og fagspesifikke chatboter</a>, <a href="#skriveprosess">Skriving med KI som støtte</a></span></li><li>Duolingo: språklæringsapp.<span class="host"><a href="https://www.duolingo.com/" target="_blank" rel="noopener">www.duolingo.com</a></span><span class="used">Brukt i: <a href="#nevro">Struktur for elever med ADHD</a></span></li><li>Feide: felles innlogging i utdanningssektoren.<span class="host"><a href="https://www.feide.no/" target="_blank" rel="noopener">www.feide.no</a></span><span class="used">Brukt i: <a href="#velge-verktoy">Hvilket verktøy skal jeg velge?</a></span></li><li>Goblin.tools: deler en oppgave i mindre steg.<span class="host"><a href="https://goblin.tools/" target="_blank" rel="noopener">goblin.tools</a></span><span class="used">Brukt i: <a href="#nevro">Struktur for elever med ADHD</a></span></li><li>Google Gemini.<span class="host"><a href="https://gemini.google.com/" target="_blank" rel="noopener">gemini.google.com</a></span><span class="used">Brukt i: <a href="#velge-verktoy">Hvilket verktøy skal jeg velge?</a></span></li><li>Google NotebookLM.<span class="host"><a href="https://notebooklm.google.com/" target="_blank" rel="noopener">notebooklm.google.com</a></span><span class="used">Brukt i: <a href="#velge-verktoy">Hvilket verktøy skal jeg velge?</a>, <a href="#talesyntese">Å lese med ørene</a>, <a href="#leseverktoy">KI i leseopplæringen</a>, <a href="#tankekart">Tankekart og grafiske organisatorer</a>, <a href="#notebooklm">Googles NotebookLM</a></span></li><li>GPT UiO: personverntrygg KI-chat fra Universitetet i Oslo.<span class="host"><a href="https://gpt.uio.no/" target="_blank" rel="noopener">Tjenesten: gpt.uio.no</a></span><span class="host"><a href="https://www.uio.no/tjenester/it/ki/gpt-uio/" target="_blank" rel="noopener">Om tjenesten: www.uio.no/tjenester/it/ki/gpt-uio/</a></span><span class="used">Brukt i: <a href="#velge-verktoy">Hvilket verktøy skal jeg velge?</a></span></li><li>Insights i Microsoft 365 for utdanning.<span class="host"><a href="https://insights.cloud.microsoft/" target="_blank" rel="noopener">insights.cloud.microsoft</a></span><span class="used">Brukt i: <a href="#leseverktoy">KI i leseopplæringen</a></span></li><li>JAWS: skjermleser for Windows.<span class="host"><a href="https://www.cantec.no/syn-gruppert/programvare-1/programvare/jaws" target="_blank" rel="noopener">www.cantec.no/syn-gruppert/programvare-1/programvare/jaws</a></span><span class="used">Brukt i: <a href="#uu">Universell utforming</a></span></li><li>Jotit: læringsstøtte for elever med ADHD.<span class="host"><a href="https://www.jotit.io/learning-solutions/adhd-students" target="_blank" rel="noopener">www.jotit.io/learning-solutions/adhd-students</a></span><span class="used">Brukt i: <a href="#nevro">Struktur for elever med ADHD</a></span></li><li>KI-veileder for lærer og elev, laget av kursets forfattere.<span class="host"><a href="https://chatgpt.com/g/g-67ea935ae00481919c1cfda7a08460d0-ki-veileder-laerer" target="_blank" rel="noopener">chatgpt.com/g/g-67ea935ae00481919c1cfda7a08460d0-ki-veileder-laerer</a></span><span class="used">Brukt i: <a href="#partner">Chatbot som læringspartner</a></span></li><li>Kursets chatbot for modul 2, bygget på modulens fagstoff.<span class="host"><a href="https://chatgpt.com/g/g-68b6f2116e9c81918d808d11481d4f2e-modul-2-tilrettelagt-undervisning-med-ki" target="_blank" rel="noopener">ChatGPT: chatgpt.com/g/g-68b6f2116e9c81918d808d11481d4f2e-modul-2-tilrettelagt-undervisning-med-ki</a></span><span class="host"><a href="https://skolebot.no/nb-NO/generate/chatbot/view/ba289578-d550-490f-8c19-f652869ebb15" target="_blank" rel="noopener">Skolebot: skolebot.no/nb-NO/generate/chatbot/view/ba289578-d550-490f-8c19-f652869ebb15</a></span><span class="used">Brukt i: <a href="#m2-oversikt">Oversikt og fagspesifikke chatboter</a></span></li><li>Microsoft Copilot.<span class="host"><a href="https://copilot.microsoft.com/" target="_blank" rel="noopener">copilot.microsoft.com</a></span><span class="used">Brukt i: <a href="#velge-verktoy">Hvilket verktøy skal jeg velge?</a></span></li><li>Microsoft Reading Coach.<span class="host"><a href="http://coach.microsoft.com/" target="_blank" rel="noopener">coach.microsoft.com</a></span><span class="used">Brukt i: <a href="#leseverktoy">KI i leseopplæringen</a></span></li><li>NB Whisper: gratis transkribering fra Nasjonalbiblioteket.<span class="host"><a href="https://ai.nb.no/nb-whisper-demo/" target="_blank" rel="noopener">ai.nb.no/nb-whisper-demo/</a></span><span class="used">Brukt i: <a href="#transkribering">Teksting og transkribering</a></span></li><li>Neurolist: oppgavelister for nevrodivergente.<span class="host"><a href="https://neurolist.app/" target="_blank" rel="noopener">neurolist.app</a></span><span class="used">Brukt i: <a href="#nevro">Struktur for elever med ADHD</a></span></li><li>Norges Blindeforbund. Punktskrift.<span class="host"><a href="https://www.blindeforbundet.no/hjelpemidler-og-produkter/punktskrift-blindeskrift" target="_blank" rel="noopener">www.blindeforbundet.no/hjelpemidler-og-produkter/punktskrift-blindeskrift</a></span><span class="used">Brukt i: <a href="#uu">Universell utforming</a></span></li><li>NVDA: skjermleser for Windows (Statped).<span class="host"><a href="https://www.statped.no/ressurser-og-verktoy/ressurser/ikt-for-punktskriftbrukere/skjermleserprogrammer/nvda-for-windows/" target="_blank" rel="noopener">www.statped.no/ressurser-og-verktoy/ressurser/ikt-for-punktskriftbrukere/skjermleserprogrammer/nvda-for-windows/</a></span><span class="used">Brukt i: <a href="#uu">Universell utforming</a></span></li><li>Osloskolen: egne språkmodeller for lærere og elever.<span class="host"><a href="https://ki.osloskolen.no/" target="_blank" rel="noopener">ki.osloskolen.no</a></span><span class="used">Brukt i: <a href="#lese-del1">Å lese og arbeide med tekst</a></span></li><li>Praterobot på NDLA (Min NDLA).<span class="host"><a href="https://ndla.no/minndla" target="_blank" rel="noopener">Min NDLA: ndla.no/minndla</a></span><span class="host"><a href="https://support.ndla.no/hc/no/articles/11397765346716-Bruke-praterobot-p%C3%A5-NDLA" target="_blank" rel="noopener">Veiledning: support.ndla.no/hc/no/articles/11397765346716-Bruke-praterobot-p%C3%A5-NDLA</a></span><span class="used">Brukt i: <a href="#velge-verktoy">Hvilket verktøy skal jeg velge?</a>, <a href="#skriveprosess">Skriving med KI som støtte</a></span></li><li>Skolebot: KI for norske skoler, med praterobotene Lærerhjelp, Matteguiden m.fl.<span class="host"><a href="https://skolebot.no/" target="_blank" rel="noopener">Forside: skolebot.no</a></span><span class="host"><a href="https://skolebot.no/prompt/matteguiden" target="_blank" rel="noopener">Matteguiden: skolebot.no/prompt/matteguiden</a></span><span class="host"><a href="https://skolebot.no/generate/diagrams" target="_blank" rel="noopener">Diagrammer: skolebot.no/generate/diagrams</a></span><span class="host"><a href="https://skolebot.no/prompt" target="_blank" rel="noopener">Delte boter: skolebot.no/prompt</a></span><span class="used">Brukt i: <a href="#velge-verktoy">Hvilket verktøy skal jeg velge?</a>, <a href="#m2-oversikt">Oversikt og fagspesifikke chatboter</a>, <a href="#skriveprosess">Skriving med KI som støtte</a>, <a href="#tankekart">Tankekart og grafiske organisatorer</a>, <a href="#matte">Matematikk: forklar oppgaven</a></span></li><li>Speechify: opplesing i nettleseren.<span class="host"><a href="https://speechify.com/pricing/" target="_blank" rel="noopener">speechify.com/pricing/</a></span><span class="used">Brukt i: <a href="#talesyntese">Å lese med ørene</a></span></li></ul>
+</section>
+
+
+<footer class="foot">
+  <p>Innholdet bygger på kursdokumentet «Kunstig intelligens i elevens læringsarbeid», Høgskolen i Østfold. Teksten er skrevet om for denne siden. Kursets innleveringsoppgaver er ikke med.</p>
+  <p>KI-tjenester og regler endrer seg raskt. Sjekk alltid hva skolen din har databehandleravtale for før elevene tar i bruk et verktøy.</p>
+</footer>
+
+</div>
+</main>
+</div>
+
+<dialog class="vmodal" id="vmodal" aria-labelledby="vtitle">
+  <div class="vbox">
+    <div class="vhead"><h2 id="vtitle">Video</h2><button type="button" class="vclose" id="vclose">Lukk ✕</button></div>
+    <div class="vstage" id="vstage"></div>
+    <div class="vfoot"><p id="vdesc"></p><a id="vlink" href="#" target="_blank" rel="noopener">Åpne på YouTube</a></div>
+  </div>
+</dialog>
+<script>
+(function(){
+  var side=document.getElementById('side'),btn=document.getElementById('menuBtn'),scrim=document.getElementById('scrim');
+  function setMenu(open){
+    side.classList.toggle('open',open);
+    scrim.hidden=!open;
+    btn.setAttribute('aria-expanded',open?'true':'false');
+  }
+  btn.addEventListener('click',function(){setMenu(!side.classList.contains('open'))});
+  scrim.addEventListener('click',function(){setMenu(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')setMenu(false)});
+  side.addEventListener('click',function(e){if(e.target.closest('a'))setMenu(false)});
+
+  /* videoer åpnes i popup og lastes først ved klikk */
+  var dlg=document.getElementById('vmodal'),stage=document.getElementById('vstage'),vt=document.getElementById('vtitle'),
+      vd=document.getElementById('vdesc'),vl=document.getElementById('vlink'),lastBtn=null;
+  function closeVideo(){if(dlg.open&&dlg.close)dlg.close();else dlg.removeAttribute('open');cleanup()}
+  function cleanup(){stage.innerHTML='';document.documentElement.classList.remove('vopen');if(lastBtn){lastBtn.focus();lastBtn=null}}
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('.vid-play');
+    if(!b)return;
+    var fig=b.closest('.vid'),id=fig.getAttribute('data-yt'),title=fig.getAttribute('data-title')||'Video';
+    var d=fig.querySelector('figcaption span');
+    lastBtn=b;
+    vt.textContent=title;
+    vd.textContent=d?d.textContent:'';
+    vl.href='https://www.youtube.com/watch?v='+id;
+    stage.innerHTML='';
+    var web=/^https?:$/.test(location.protocol)&&location.origin!=='null';
+    if(web){
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0';
+      f.title=title;
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      f.setAttribute('allowfullscreen','');
+      f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+      stage.appendChild(f);
+    }else{
+      var n=document.createElement('div');n.className='vnoplay';
+      n.innerHTML='<img alt="" src="https://i.ytimg.com/vi/'+id+'/hqdefault.jpg" onerror="this.remove()"><p>YouTube tillater ikke avspilling her, fordi siden åpnes som en fil eller i en forhåndsvisning. Publisert på en nettadresse spilles videoen rett i dette vinduet.</p><a class="big" target="_blank" rel="noopener" href="https://www.youtube.com/watch?v='+id+'">Se videoen på YouTube</a>';
+      stage.appendChild(n);
+    }
+    document.documentElement.classList.add('vopen');
+    if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');
+  });
+  document.getElementById('vclose').addEventListener('click',closeVideo);
+  dlg.addEventListener('click',function(e){if(e.target===dlg)closeVideo()});
+  dlg.addEventListener('close',cleanup);
+  dlg.addEventListener('cancel',function(){/* Esc: close-hendelsen rydder */});
+
+  /* kopier ledetekst */
+  document.addEventListener('click',function(e){
+    var c=e.target.closest('[data-copy]');
+    if(!c)return;
+    var pre=document.getElementById(c.getAttribute('data-copy'));
+    var txt=pre.textContent;
+    function done(){var o=c.textContent;c.textContent='Kopiert';setTimeout(function(){c.textContent=o},1600)}
+    function fallback(){var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r)}
+    try{navigator.clipboard.writeText(txt).then(done,fallback)}catch(err){fallback()}
+  });
+
+  /* aktiv seksjon i menyen */
+  var links={},secs=[].slice.call(document.querySelectorAll('section.sec'));
+  [].forEach.call(document.querySelectorAll('.navgroup a'),function(a){links[a.getAttribute('href').slice(1)]=a});
+  var current=null;
+  function setCurrent(id){
+    if(id===current||!links[id])return;
+    if(current&&links[current])links[current].removeAttribute('aria-current');
+    links[id].setAttribute('aria-current','true');
+    current=id;
+    if(window.matchMedia('(min-width:62.01rem)').matches){
+      var a=links[id],r=a.getBoundingClientRect(),h=side.clientHeight;
+      if(r.top<80||r.bottom>h-40){side.scrollTop+=r.top-h/2}
+    }
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){if(en.isIntersecting)setCurrent(en.target.id)});
+    },{rootMargin:'-12% 0px -80% 0px'});
+    secs.forEach(function(s){io.observe(s)});
+  }
+
+  /* lesefremdrift */
+  var bar=document.getElementById('bar');
+  function prog(){
+    var d=document.documentElement,max=d.scrollHeight-d.clientHeight;
+    bar.style.width=(max>0?Math.min(100,d.scrollTop/max*100):0)+'%';
+  }
+  window.addEventListener('scroll',prog,{passive:true});prog();
+})();
+</script>
+</body>
+</html>
